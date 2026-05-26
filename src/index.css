@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  margin: 0;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes glasses-toggle {
+  0%,
+  40% {
+    transform: translateY(0);
+  }
+  55% {
+    transform: translateY(-90%);
+  }
+  70% {
+    transform: translateY(-90%);
+  }
+  85%,
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-glasses {
+  animation: glasses-toggle 3s ease-in-out infinite;
+}
+
+@keyframes hand-wave {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-20deg);
+  }
+  75% {
+    transform: rotate(18deg);
+  }
+}
+
+.animate-hand {
+  animation: hand-wave 2.7s ease-in-out infinite;
+  transform-origin: bottom left;
+}
+
+@keyframes star-twinkle {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(0.75) rotate(30deg);
+    opacity: 1;
+  }
+}
+
+.animate-star {
+  animation: star-twinkle 2.4s ease-in-out infinite;
+}
+.animate-star-delay-1 {
+  animation: star-twinkle 2.4s ease-in-out 0.4s infinite;
+}
+.animate-star-delay-2 {
+  animation: star-twinkle 2.4s ease-in-out 0.9s infinite;
+}
+.animate-star-delay-3 {
+  animation: star-twinkle 2.4s ease-in-out 1.4s infinite;
+}
+.animate-star-delay-4 {
+  animation: star-twinkle 2.4s ease-in-out 1.9s infinite;
+}
+
+/* 스플래시 */
+@keyframes splash-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes splash-glow-pulse {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.2);
+    opacity: 0.75;
+  }
+}
+
+@keyframes splash-float {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+}
+
+.animate-splash-enter {
+  animation: splash-enter 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-splash-glow {
+  animation: splash-glow-pulse 2.8s ease-in-out infinite;
+}
+
+.animate-splash-float-1 {
+  animation: splash-float 3.2s ease-in-out infinite;
+}
+.animate-splash-float-2 {
+  animation: splash-float 3.2s ease-in-out 0.7s infinite;
+}
+.animate-splash-float-3 {
+  animation: splash-float 3.2s ease-in-out 1.4s infinite;
+}
+.animate-splash-float-4 {
+  animation: splash-float 3.2s ease-in-out 2.1s infinite;
+}
+
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-enter {
+  animation: page-enter 320ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes slide-in-from-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes slide-out-to-right {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+
+.animate-slide-in {
+  animation: slide-in-from-right 300ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.animate-slide-out {
+  animation: slide-out-to-right 280ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes slide-up-from-bottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up-from-bottom 300ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes slide-down-to-bottom {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
+.animate-slide-down {
+  animation: slide-down-to-bottom 280ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
