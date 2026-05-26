@@ -343,6 +343,24 @@ const PlanUpgradeModal = ({ onClose }: { onClose: () => void }) => (
 // ── 메인 페이지 ───────────────────────────────────────────────────────────
 const FREE_KEYWORD_LIMIT = 3;
 
+const COLOR_NAME: Record<string, string> = {
+  AISSUE: "아이슈",
+  JANMANG: "잔망슈",
+  SUNSET: "선셋슈",
+  RETRO: "레트로슈",
+  SWEET: "달콤슈",
+  COOL: "쿨슈",
+};
+
+const COLOR_FILTER: Record<string, string> = {
+  AISSUE: "none",
+  JANMANG: "hue-rotate(305deg) saturate(1.1) brightness(1.2)",
+  SUNSET: "hue-rotate(155deg) saturate(0.9) brightness(1.1)",
+  RETRO: "hue-rotate(40deg) saturate(0.85) brightness(1.1)",
+  SWEET: "hue-rotate(225deg) saturate(0.85) brightness(1.2)",
+  COOL: "hue-rotate(345deg) saturate(1.0) brightness(1.1)",
+};
+
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -350,11 +368,17 @@ const ProfilePage = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [keywordCount, setKeywordCount] = useState<number | null>(null);
+  const [userInfo, setUserInfo] = useState<{ color: string; points: number } | null>(null);
 
   useEffect(() => {
-    keywordService
-      .getSubscriptions()
-      .then((subs: unknown[]) => setKeywordCount(subs.length))
+    Promise.all([
+      userService.getProfile(),
+      keywordService.getSubscriptions(),
+    ])
+      .then(([profile, subs]) => {
+        setUserInfo({ color: profile.color, points: profile.points });
+        setKeywordCount((subs as unknown[]).length);
+      })
       .catch(() => {});
   }, []);
 
@@ -423,16 +447,19 @@ const ProfilePage = () => {
             src={mascot}
             alt="아이슈 마스코트"
             className="relative w-full h-auto object-contain"
+            style={{ filter: COLOR_FILTER[userInfo?.color ?? ""] ?? "none" }}
           />
           <img
             src={mascotGlass}
             alt=""
             className="absolute top-[8%] left-[16%] w-[70%] h-auto animate-glasses"
+            style={{ filter: COLOR_FILTER[userInfo?.color ?? ""] ?? "none" }}
           />
           <img
             src={mascotHand}
             alt=""
             className="absolute top-[35%] left-[75%] w-[48%] h-auto animate-hand"
+            style={{ filter: COLOR_FILTER[userInfo?.color ?? ""] ?? "none" }}
           />
         </div>
 
@@ -446,11 +473,15 @@ const ProfilePage = () => {
         <div className="relative z-10 flex items-center justify-center gap-8 mt-1">
           <div className="flex items-center gap-2">
             <span className="text-[14px] text-[#8F8F8F]">캐릭터</span>
-            <span className="text-[18px] font-bold text-[#3B91F4]">아이슈</span>
+            <span className="text-[18px] font-bold text-[#3B91F4]">
+              {userInfo ? (COLOR_NAME[userInfo.color] ?? userInfo.color) : "—"}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[14px] text-[#8F8F8F]">포인트</span>
-            <span className="text-[20px] font-bold text-[#3B91F4]">300</span>
+            <span className="text-[20px] font-bold text-[#3B91F4]">
+              {userInfo?.points ?? "—"}
+            </span>
             <PointBadge />
           </div>
         </div>

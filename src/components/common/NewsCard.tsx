@@ -1,4 +1,5 @@
 import type { Article } from '../../types';
+import newsPlaceholder from '../../assets/news-placeholder.svg';
 
 interface Props {
   article: Article;
@@ -12,9 +13,10 @@ const NewsCard = ({ article, active = false, onClick }: Props) => {
       {/* 썸네일 */}
       <div className="relative bg-gray-200 overflow-hidden flex-shrink-0 h-[clamp(128px,_32.5vw,_186px)]">
         <img
-          src={article.imageUrl}
+          src={article.imageUrl || newsPlaceholder}
           alt={article.title}
           className="w-full h-full object-cover"
+          onError={(e) => { (e.currentTarget as HTMLImageElement).src = newsPlaceholder; }}
         />
         {article.trusted !== undefined && (
           <div

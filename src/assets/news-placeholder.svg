@@ -1,0 +1,10 @@
+<svg width="400" height="200" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="200" fill="#EEF2F7"/>
+  <!-- 신문 아이콘 -->
+  <rect x="168" y="72" width="64" height="56" rx="6" fill="#D4DCEB"/>
+  <rect x="176" y="80" width="32" height="4" rx="2" fill="#B8C4D8"/>
+  <rect x="176" y="90" width="48" height="3" rx="1.5" fill="#B8C4D8"/>
+  <rect x="176" y="98" width="40" height="3" rx="1.5" fill="#B8C4D8"/>
+  <rect x="176" y="106" width="44" height="3" rx="1.5" fill="#B8C4D8"/>
+  <rect x="176" y="114" width="36" height="3" rx="1.5" fill="#B8C4D8"/>
+</svg>

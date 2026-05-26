@@ -168,4 +168,6 @@ export interface UserProfile {
   userId: number;
   username: string;
   name: string;
+  color: string;
+  points: number;
 }
