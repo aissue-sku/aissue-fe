@@ -16,61 +16,49 @@ const SearchResultPage = () => {
   const [loading, setLoading] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
 
-  const pageRef = useRef(0);
+  const cursorRef = useRef<number | undefined>(undefined);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const loadingRef = useRef(false);
-  const keywordRef = useRef(keyword);
 
-  const loadPage = useCallback(async (pageNum: number, reset = false) => {
+  const loadNext = useCallback(async (reset = false) => {
     if (loadingRef.current) return;
     loadingRef.current = true;
-    if (reset) {
-      setNews([]);
-      setHasMore(true);
-    }
     setLoading(true);
     try {
-      const items = await keywordService.getKeywordNews(keywordRef.current, pageNum, PAGE_SIZE);
-      if (items.length === 0) {
-        setHasMore(false);
-      } else {
-        setNews((prev) => (reset ? items : [...prev, ...items]));
-        setHasMore(items.length >= PAGE_SIZE);
-      }
+      const cursor = reset ? undefined : cursorRef.current;
+      const res = await keywordService.getKeywordNews(keyword, cursor, PAGE_SIZE);
+      const content = res?.content ?? [];
+      setNews((prev) => (reset ? content : [...prev, ...content]));
+      cursorRef.current = res?.lastCursor ?? undefined;
+      setHasMore(res?.hasNext ?? false);
     } catch {
       setHasMore(false);
     } finally {
       setLoading(false);
       loadingRef.current = false;
     }
-  }, []);
+  }, [keyword]);
 
   useEffect(() => {
-    keywordRef.current = keyword;
-    pageRef.current = 0;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadPage(0, true);
-  }, [keyword, loadPage]);
+    cursorRef.current = undefined;
+    setNews([]);
+    setHasMore(true);
+    loadNext(true);
+  }, [keyword, loadNext]);
 
   useEffect(() => {
     if (!hasMore) return;
     const el = sentinelRef.current;
     if (!el) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !loadingRef.current) {
-          const next = pageRef.current + 1;
-          pageRef.current = next;
-          loadPage(next);
-        }
+        if (entries[0].isIntersecting && !loadingRef.current) loadNext();
       },
       { threshold: 0.1 },
     );
-
     observer.observe(el);
     return () => observer.disconnect();
-  }, [hasMore, loadPage]);
+  }, [hasMore, loadNext]);
 
   const handleBack = () => {
     setIsExiting(true);
@@ -105,7 +93,6 @@ const SearchResultPage = () => {
           <p className="text-[20px] font-semibold text-[#1a1a1a] leading-[1.6]">
             실시간 주요 뉴스
           </p>
-          <span className="text-[12px] text-[#a8a8a8]">{news.length}건</span>
         </div>
 
         {/* 초기 로딩 */}

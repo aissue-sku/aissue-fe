@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { keywordService, userService } from "../../services";
@@ -185,7 +186,7 @@ const DeleteAccountModal = ({
     setTimeout(onClose, 260);
   };
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/50"
       onClick={handleClose}
@@ -224,12 +225,13 @@ const DeleteAccountModal = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
 // ── 플랜 업그레이드 모달 ──────────────────────────────────────────────────
-const PlanUpgradeModal = ({ onClose }: { onClose: () => void }) => (
+const PlanUpgradeModal = ({ onClose }: { onClose: () => void }) => createPortal(
   <div
     className="fixed inset-0 z-50 flex items-end justify-center bg-black/50"
     onClick={onClose}
@@ -337,7 +339,8 @@ const PlanUpgradeModal = ({ onClose }: { onClose: () => void }) => (
         프로로 업그레이드하기
       </button>
     </div>
-  </div>
+  </div>,
+  document.body
 );
 
 // ── 메인 페이지 ───────────────────────────────────────────────────────────

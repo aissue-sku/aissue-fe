@@ -47,9 +47,16 @@ export type ArticleSearchResponse = PagedResponse<Article>;
 export interface KeywordNewsItem {
   id: string;
   title: string;
-  imageUrl: string;
+  imageUrl: string | null;
   timeAgo: string;
   url: string;
+}
+
+export interface KeywordNewsPage {
+  content: KeywordNewsItem[];
+  lastCursor: number | null;
+  hasNext: boolean;
+  size: number;
 }
 
 // ── 키워드 ───────────────────────────────────────────────────────────────────

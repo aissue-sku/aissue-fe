@@ -11,7 +11,7 @@ const NewsCard = ({ article, active = false, onClick }: Props) => {
   return (
     <div onClick={onClick} className={`bg-[#FBFBFB] rounded-2xl overflow-hidden flex-shrink-0 w-[clamp(248px,_63vw,_360px)] flex flex-col transition-all duration-300 border-[1.2px] border-[#E5E5E5] ${active ? 'h-[clamp(320px,_81vw,_464px)]' : 'h-[clamp(256px,_65vw,_371px)]'} ${onClick ? 'cursor-pointer' : ''}`}>
       {/* 썸네일 */}
-      <div className="relative bg-gray-200 overflow-hidden flex-shrink-0 h-[clamp(128px,_32.5vw,_186px)]">
+      <div className="relative bg-gray-200 overflow-hidden flex-shrink-0 h-[clamp(148px,_37.5vw,_214px)]">
         <img
           src={article.imageUrl || newsPlaceholder}
           alt={article.title}
@@ -45,9 +45,15 @@ const NewsCard = ({ article, active = false, onClick }: Props) => {
         <p className="text-xs font-semibold text-[#5b9cf6] mb-1">{article.timeAgo}</p>
 
         {active && (
-          <h3 className="text-[15px] font-bold text-gray-900 leading-snug mb-2 line-clamp-2">
+          <h3 className="text-[15px] font-bold text-gray-900 leading-snug mb-1 line-clamp-2">
             {article.title}
           </h3>
+        )}
+
+        {active && article.teaser && (
+          <p className="text-[13px] text-[#8f8f8f] leading-snug mb-2 line-clamp-1">
+            {article.teaser}
+          </p>
         )}
 
         {/* 태그 */}
@@ -63,7 +69,7 @@ const NewsCard = ({ article, active = false, onClick }: Props) => {
         </div>
 
         {/* 카테고리 */}
-        {active && article.category && (
+        {article.category && (
           <div className="mt-auto pt-1">
             <span className="text-xs font-semibold text-[#8f8f8f] bg-[#f5f5f5] rounded-[5px] px-2 py-1">
               {article.category}

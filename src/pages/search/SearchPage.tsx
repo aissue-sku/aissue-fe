@@ -5,6 +5,7 @@ import fireIcon from "../../assets/fire.svg";
 import bellIcon from "../../assets/bell.svg";
 import bellBlueIcon from "../../assets/bell-blue.svg";
 import { useKeywords } from "../../hooks/useKeywords";
+import UpgradeModal from "../../components/common/UpgradeModal";
 
 const CATEGORIES = ["경제", "사회", "과학"];
 
@@ -12,6 +13,7 @@ const SearchPage = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("추천");
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const { keywords, toggleSubscribe } = useKeywords();
 
   const goToResult = (keyword: string) => {
@@ -114,9 +116,10 @@ const SearchPage = () => {
 
             {/* 알림 */}
             <button
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.stopPropagation();
-                toggleSubscribe(item.keyword, item.subscribed);
+                const ok = await toggleSubscribe(item.keyword, item.subscribed);
+                if (!ok) setShowUpgradeModal(true);
               }}
               className="w-8 h-8 flex items-center justify-center cursor-pointer flex-shrink-0"
             >
@@ -129,6 +132,7 @@ const SearchPage = () => {
           </div>
         ))}
       </div>
+      {showUpgradeModal && <UpgradeModal onClose={() => setShowUpgradeModal(false)} />}
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { useAuth } from "../../hooks/useAuth";
 
 const SignupPage = () => {
   const navigate = useNavigate();
-  const { signup, loading, error } = useAuth();
+  const { signup, loading, error, fieldErrors } = useAuth();
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -25,7 +25,6 @@ const SignupPage = () => {
     await signup({ username, name, password });
   };
 
-  const displayError = localError ?? error;
 
   return (
     <div className="min-h-dvh bg-[#f2f2f7] flex flex-col animate-page-enter">
@@ -65,8 +64,11 @@ const SignupPage = () => {
                 placeholder="영문·숫자 4~20자"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="h-13 border border-gray-200 rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors"
+                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.username ? 'border-red-400' : 'border-gray-200'}`}
               />
+              {fieldErrors?.username && (
+                <p className="text-xs text-red-500">{fieldErrors.username}</p>
+              )}
             </div>
 
             {/* 이름 */}
@@ -79,8 +81,11 @@ const SignupPage = () => {
                 placeholder="홍길동"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="h-13 border border-gray-200 rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors"
+                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.name ? 'border-red-400' : 'border-gray-200'}`}
               />
+              {fieldErrors?.name && (
+                <p className="text-xs text-red-500">{fieldErrors.name}</p>
+              )}
             </div>
 
             {/* 비밀번호 */}
@@ -93,8 +98,11 @@ const SignupPage = () => {
                 placeholder="영문·숫자·특수문자 포함 8~20자"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="h-13 border border-gray-200 rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors"
+                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.password ? 'border-red-400' : 'border-gray-200'}`}
               />
+              {fieldErrors?.password && (
+                <p className="text-xs text-red-500">{fieldErrors.password}</p>
+              )}
             </div>
 
             {/* 비밀번호 확인 */}
@@ -107,13 +115,16 @@ const SignupPage = () => {
                 placeholder="비밀번호를 다시 입력하세요"
                 value={passwordConfirm}
                 onChange={(e) => setPasswordConfirm(e.target.value)}
-                className="h-13 border border-gray-200 rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors"
+                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${localError ? 'border-red-400' : 'border-gray-200'}`}
               />
+              {localError && (
+                <p className="text-xs text-red-500">{localError}</p>
+              )}
             </div>
 
-            {/* 에러 메시지 */}
-            {displayError && (
-              <p className="text-xs text-red-500 -mt-2">{displayError}</p>
+            {/* 일반 에러 메시지 */}
+            {(error && !fieldErrors) && (
+              <p className="text-xs text-red-500 -mt-2">{error}</p>
             )}
 
             {/* 가입하기 버튼 */}

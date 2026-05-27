@@ -7,6 +7,7 @@ export interface User {
 export interface Article {
   id: string;
   title: string;
+  teaser?: string;
   imageUrl: string;
   timeAgo: string;
   tags: string[];

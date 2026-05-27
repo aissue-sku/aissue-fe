@@ -1,6 +1,6 @@
 // CONTENT-COLLECTION-SERVICE (Gateway → :8083)
 import { http } from './client';
-import type { ApiResponse, TrendingKeyword, KeywordNewsItem } from '../types/api';
+import type { ApiResponse, TrendingKeyword, KeywordNewsPage } from '../types/api';
 
 export const keywordService = {
   getTrending: (): Promise<TrendingKeyword[]> =>
@@ -8,10 +8,10 @@ export const keywordService = {
       .get<ApiResponse<TrendingKeyword[]>>('/api/contents/hot-topics')
       .then((res) => res.data),
 
-  getKeywordNews: (keyword: string, page = 0, size = 10): Promise<KeywordNewsItem[]> =>
+  getKeywordNews: (keyword: string, cursor?: number, size = 10): Promise<KeywordNewsPage> =>
     http
-      .get<ApiResponse<KeywordNewsItem[]>>(
-        `/api/contents/keyword-news?keyword=${encodeURIComponent(keyword)}&page=${page}&size=${size}`,
+      .get<ApiResponse<KeywordNewsPage>>(
+        `/api/contents/keyword-news?keyword=${encodeURIComponent(keyword)}${cursor != null ? `&cursor=${cursor}` : ''}&size=${size}`,
       )
       .then((res) => res.data),
 

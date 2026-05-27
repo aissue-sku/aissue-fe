@@ -7,7 +7,7 @@ import { useAuth } from "../../hooks/useAuth";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login, testLogin, loading, error } = useAuth();
+  const { login, testLogin, loading, error, fieldErrors } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -19,7 +19,7 @@ const LoginPage = () => {
   return (
     <div className="h-dvh overflow-hidden bg-[#f2f2f7] flex flex-col items-center px-5 pt-[6.75rem] pb-10 animate-page-enter">
       {/* 마스코트 + 로고 */}
-      <div className="flex flex-col items-center mb-3">
+      <div className="flex flex-col items-center mb-8 -mt-8">
         <div className="relative w-28">
           <img
             src={mascot}
@@ -48,8 +48,11 @@ const LoginPage = () => {
               placeholder="아이디를 입력하세요"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="h-13 border border-gray-200 rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors"
+              className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.username ? "border-red-400" : "border-gray-200"}`}
             />
+            {fieldErrors?.username && (
+              <p className="text-xs text-red-500">{fieldErrors.username}</p>
+            )}
           </div>
 
           {/* 비밀번호 */}
@@ -62,14 +65,15 @@ const LoginPage = () => {
               placeholder="비밀번호를 입력하세요"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="h-13 border border-gray-200 rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors"
+              className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.password ? "border-red-400" : "border-gray-200"}`}
             />
+            {fieldErrors?.password && (
+              <p className="text-xs text-red-500">{fieldErrors.password}</p>
+            )}
           </div>
 
-          {/* 에러 메시지 */}
-          {error && (
-            <p className="text-xs text-red-500 -mt-2">{error}</p>
-          )}
+          {/* 일반 에러 메시지 */}
+          {error && <p className="text-xs text-red-500 -mt-2">{error}</p>}
 
           {/* 로그인 버튼 */}
           <button

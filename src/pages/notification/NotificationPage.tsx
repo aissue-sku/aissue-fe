@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Bell } from 'lucide-react';
+import { ChevronLeft, Bell, Trash2 } from 'lucide-react';
 import { useNotifications } from '../../hooks/useNotifications';
+
+const SWIPE_THRESHOLD = 80;
+const SWIPE_MAX = 100;
 
 const formatTimeAgo = (dateStr: string): string => {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -21,14 +24,39 @@ const NotificationPage = () => {
   const { notifications, unreadCount, loading, error, markAsRead, dismiss } =
     useNotifications();
 
+  const [swipeOffsets, setSwipeOffsets] = useState<Record<number, number>>({});
+  const [activeSwiping, setActiveSwiping] = useState<number | null>(null);
+  const touchStartX = useRef<Record<number, number>>({});
+
   const handleBack = () => {
     setIsExiting(true);
     setTimeout(() => navigate(-1), 280);
   };
 
   const handleCardClick = (id: number, contentId: number, title: string) => {
+    if ((swipeOffsets[id] ?? 0) < -10) return;
     markAsRead(id);
     navigate('/analysis/trust', { state: { contentId: String(contentId), title } });
+  };
+
+  const handleTouchStart = (id: number, e: React.TouchEvent) => {
+    touchStartX.current[id] = e.touches[0].clientX;
+    setActiveSwiping(id);
+  };
+
+  const handleTouchMove = (id: number, e: React.TouchEvent) => {
+    const dx = e.touches[0].clientX - (touchStartX.current[id] ?? 0);
+    if (dx < 0) {
+      setSwipeOffsets((prev) => ({ ...prev, [id]: Math.max(dx, -SWIPE_MAX) }));
+    }
+  };
+
+  const handleTouchEnd = (id: number) => {
+    setActiveSwiping(null);
+    if ((swipeOffsets[id] ?? 0) < -SWIPE_THRESHOLD) {
+      dismiss(id);
+    }
+    setSwipeOffsets((prev) => ({ ...prev, [id]: 0 }));
   };
 
   return (
@@ -87,71 +115,82 @@ const NotificationPage = () => {
 
         {!loading && !error && notifications.length > 0 && (
           <ul className="flex flex-col gap-[1px] bg-[#ebebeb]">
-            {notifications.map((item) => (
-              <li key={item.id} className="relative bg-white">
-                {/* 읽지 않음 좌측 강조선 */}
-                {!item.read && (
-                  <span className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#51a2ff] rounded-r-full" />
-                )}
+            {notifications.map((item) => {
+              const offset = swipeOffsets[item.id] ?? 0;
+              const isSwiping = activeSwiping === item.id;
+              const deleteProgress = Math.min(Math.abs(offset) / SWIPE_THRESHOLD, 1);
 
-                <button
-                  onClick={() => handleCardClick(item.id, item.contentId, item.title)}
-                  className="w-full text-left px-5 py-4 flex items-start gap-3 active:bg-[#f8f8f8] transition-colors"
+              return (
+                <li
+                  key={item.id}
+                  className="relative bg-[#FF6B6B] overflow-hidden"
+                  onTouchStart={(e) => handleTouchStart(item.id, e)}
+                  onTouchMove={(e) => handleTouchMove(item.id, e)}
+                  onTouchEnd={() => handleTouchEnd(item.id)}
                 >
-                  {/* 아이콘 */}
+                  {/* 삭제 배경 */}
+                  <div className="absolute inset-0 flex items-center justify-end pr-5">
+                    <Trash2
+                      size={20}
+                      className="text-white"
+                      style={{ opacity: deleteProgress }}
+                    />
+                  </div>
+
+                  {/* 슬라이드 콘텐츠 */}
                   <div
-                    className={`mt-0.5 w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      item.read ? 'bg-[#f0f0f0]' : 'bg-[#e8f3ff]'
-                    }`}
+                    className="relative bg-white"
+                    style={{
+                      transform: `translateX(${offset}px)`,
+                      transition: isSwiping ? 'none' : 'transform 300ms ease',
+                    }}
                   >
-                    <Bell
-                      size={17}
-                      className={item.read ? 'text-[#b0b0b0]' : 'text-[#51a2ff]'}
-                    />
-                  </div>
+                    {/* 읽지 않음 좌측 강조선 */}
+                    {!item.read && (
+                      <span className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#51a2ff] rounded-r-full" />
+                    )}
 
-                  {/* 텍스트 */}
-                  <div className="flex-1 min-w-0 flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-semibold text-[#51a2ff] bg-[#e8f3ff] rounded-full px-2 py-0.5 leading-none">
-                        {item.keyword}
-                      </span>
-                      <span className="text-[12px] text-[#aaa] ml-auto flex-shrink-0">
-                        {formatTimeAgo(item.createdAt)}
-                      </span>
-                    </div>
-                    <p
-                      className={`text-[14px] leading-[1.5] line-clamp-2 ${
-                        item.read
-                          ? 'text-[#888] font-normal'
-                          : 'text-[#1a1a1a] font-semibold'
-                      }`}
+                    <button
+                      onClick={() => handleCardClick(item.id, item.contentId, item.title)}
+                      className="w-full text-left px-5 py-4 flex items-start gap-3 active:bg-[#f8f8f8] transition-colors"
                     >
-                      {item.title}
-                    </p>
-                  </div>
-                </button>
+                      {/* 아이콘 */}
+                      <div
+                        className={`mt-0.5 w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
+                          item.read ? 'bg-[#f0f0f0]' : 'bg-[#e8f3ff]'
+                        }`}
+                      >
+                        <Bell
+                          size={17}
+                          className={item.read ? 'text-[#b0b0b0]' : 'text-[#51a2ff]'}
+                        />
+                      </div>
 
-                {/* 삭제 버튼 */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    dismiss(item.id);
-                  }}
-                  className="absolute right-4 top-4 p-1.5 rounded-full active:bg-[#f0f0f0] transition-colors"
-                  aria-label="알림 삭제"
-                >
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path
-                      d="M2 2l10 10M12 2L2 12"
-                      stroke="#c0c0c0"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-              </li>
-            ))}
+                      {/* 텍스트 */}
+                      <div className="flex-1 min-w-0 flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-semibold text-[#51a2ff] bg-[#e8f3ff] rounded-full px-2 py-0.5 leading-none">
+                            {item.keyword}
+                          </span>
+                          <span className="text-[12px] text-[#aaa] ml-auto flex-shrink-0">
+                            {formatTimeAgo(item.createdAt)}
+                          </span>
+                        </div>
+                        <p
+                          className={`text-[14px] leading-[1.5] line-clamp-2 ${
+                            item.read
+                              ? 'text-[#888] font-normal'
+                              : 'text-[#1a1a1a] font-semibold'
+                          }`}
+                        >
+                          {item.title}
+                        </p>
+                      </div>
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>

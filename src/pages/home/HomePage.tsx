@@ -281,6 +281,9 @@ const HomePage = () => {
 
   const [activeIndex, setActiveIndex] = useState(CLONES);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const pageRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [bgPct, setBgPct] = useState("40%");
   const articlesRef = useRef(articles);
   const strideRef = useRef(248 - CARD_OVERLAP);
   const activeIdxRef = useRef(CLONES);
@@ -288,6 +291,23 @@ const HomePage = () => {
   useEffect(() => {
     articlesRef.current = articles;
   }, [articles]);
+
+  useEffect(() => {
+    const update = () => {
+      if (!pageRef.current || !carouselRef.current) return;
+      const pageRect = pageRef.current.getBoundingClientRect();
+      const carouselRect = carouselRef.current.getBoundingClientRect();
+      const pageH = pageRef.current.offsetHeight;
+      const centerFromTop = (carouselRect.top - pageRect.top) + carouselRect.height / 2;
+      const pct = ((pageH - centerFromTop) / pageH) * 100;
+      setBgPct(`${pct.toFixed(1)}%`);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(document.documentElement);
+    if (carouselRef.current) ro.observe(carouselRef.current);
+    return () => ro.disconnect();
+  }, [articles, loading]);
 
   const clonedArticles = useMemo(
     () => [
@@ -384,7 +404,11 @@ const HomePage = () => {
   }, [articles.length]);
 
   return (
-    <div className="relative min-h-full bg-[linear-gradient(to_top,_#E1F3FF_40%,_white_15%)]">
+    <div
+      ref={pageRef}
+      className="relative min-h-full"
+      style={{ background: `linear-gradient(to top, #E1F3FF ${bgPct}, white ${bgPct})` }}
+    >
       {/* 알림 버튼 */}
       <div className="absolute top-4 right-5 z-10">
         <button
@@ -461,7 +485,7 @@ const HomePage = () => {
 
       {/* 뉴스 카드 캐러셀 */}
       {loading || articles.length === 0 ? (
-        <div className="w-full flex px-[calc(50%-clamp(124px,_31.5vw,_180px))] pb-4 items-center">
+        <div ref={carouselRef} className="w-full flex px-[calc(50%-clamp(124px,_31.5vw,_180px))] pb-4 items-center">
           {[0, 1, 2].map((i) => (
             <div
               key={i}
@@ -474,7 +498,7 @@ const HomePage = () => {
         </div>
       ) : (
         <div
-          ref={scrollRef}
+          ref={(el) => { scrollRef.current = el; carouselRef.current = el; }}
           className="w-full overflow-x-scroll flex px-[calc(50%-clamp(124px,_31.5vw,_180px))] pb-4 no-scrollbar items-center"
         >
           {clonedArticles.map((article, index) => {
