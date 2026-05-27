@@ -47,8 +47,8 @@ const KeywordSection = ({
     let cancelled = false;
     Promise.resolve()
       .then(() => { if (!cancelled) setLoadingNews(true); })
-      .then(() => keywordService.getKeywordNews(selected, 0, 3))
-      .then((data) => { if (!cancelled) { setNews(data); setLoadingNews(false); } })
+      .then(() => keywordService.getKeywordNews(selected, undefined, 3))
+      .then((data) => { if (!cancelled) { setNews(data?.content ?? []); setLoadingNews(false); } })
       .catch(() => { if (!cancelled) { setNews([]); setLoadingNews(false); } });
     return () => { cancelled = true; };
   }, [selected]);
