@@ -59,6 +59,12 @@ export interface KeywordNewsPage {
   size: number;
 }
 
+// ── 인기 키워드 (GET /api/notifications/popular-keywords) ────────────────────
+export interface PopularKeyword {
+  keyword: string;
+  subscriberCount: number;
+}
+
 // ── 키워드 ───────────────────────────────────────────────────────────────────
 export interface TrendingKeyword {
   rank: number;
@@ -109,7 +115,7 @@ export interface AnalysisResponse {
 export interface CritiqueItem {
   label: string;
   count: number;
-  status: '확인' | '참고';
+  status: '주의' | '확인' | '참고';
   description: string;
 }
 
@@ -168,6 +174,17 @@ export interface ContentSubmitResponse {
   transparency: number;
   verdict: string;
   reason: string;
+}
+
+// ── 분석 이력 (GET /api/contents/analysis/history) ───────────────────────────
+export interface AnalysisHistoryItem {
+  id: number;
+  contentId: number | null;
+  title: string;
+  url: string | null;
+  totalScore: number;
+  verdict: string;
+  analyzedAt: string;
 }
 
 // ── 유저 ─────────────────────────────────────────────────────────────────────

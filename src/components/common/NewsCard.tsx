@@ -9,7 +9,7 @@ interface Props {
 
 const NewsCard = ({ article, active = false, onClick }: Props) => {
   return (
-    <div onClick={onClick} className={`bg-[#FBFBFB] rounded-2xl overflow-hidden flex-shrink-0 w-[clamp(248px,_63vw,_360px)] flex flex-col transition-all duration-300 border-[1.2px] border-[#E5E5E5] ${active ? 'h-[clamp(320px,_81vw,_464px)]' : 'h-[clamp(256px,_65vw,_371px)]'} ${onClick ? 'cursor-pointer' : ''}`}>
+    <div onClick={onClick} className={`bg-[#FBFBFB] rounded-2xl overflow-hidden flex-shrink-0 w-[clamp(248px,_63vw,_360px)] flex flex-col transition-all duration-300 border-[1.2px] border-[#E5E5E5] ${active ? 'h-[clamp(348px,_88vw,_500px)]' : 'h-[clamp(278px,_70vw,_400px)]'} ${onClick ? 'cursor-pointer' : ''}`}>
       {/* 썸네일 */}
       <div className="relative bg-gray-200 overflow-hidden flex-shrink-0 h-[clamp(148px,_37.5vw,_214px)]">
         <img
@@ -42,7 +42,14 @@ const NewsCard = ({ article, active = false, onClick }: Props) => {
 
       {/* 본문 */}
       <div className="flex flex-col flex-1 p-4 overflow-hidden">
-        <p className="text-xs font-semibold text-[#5b9cf6] mb-1">{article.timeAgo}</p>
+        <div className="flex items-center gap-2 mb-1">
+          <p className="text-xs font-semibold text-[#5b9cf6]">{article.timeAgo}</p>
+          {article.category && (
+            <span className="text-xs font-semibold text-[#8f8f8f] bg-[#f5f5f5] rounded-[5px] px-2 py-0.5">
+              {article.category}
+            </span>
+          )}
+        </div>
 
         {active && (
           <h3 className="text-[15px] font-bold text-gray-900 leading-snug mb-1 line-clamp-2">
@@ -68,14 +75,6 @@ const NewsCard = ({ article, active = false, onClick }: Props) => {
           ))}
         </div>
 
-        {/* 카테고리 */}
-        {article.category && (
-          <div className="mt-auto pt-1">
-            <span className="text-xs font-semibold text-[#8f8f8f] bg-[#f5f5f5] rounded-[5px] px-2 py-1">
-              {article.category}
-            </span>
-          </div>
-        )}
       </div>
     </div>
   );

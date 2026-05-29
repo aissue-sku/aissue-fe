@@ -27,14 +27,28 @@ const SplashPage = () => {
         <div className="relative w-28">
           {/* 마스코트 배경 글로우 */}
           <div className="absolute -bottom-2 left-1/2 w-44 h-20 bg-[#C8E4FF] rounded-full blur-2xl animate-splash-glow" />
-          <img src={mascot} alt="아이슈 마스코트" className="relative w-full h-auto object-contain" />
-          <img src={mascotGlass} alt="" className="absolute top-[8%] left-[16%] w-[70%] h-auto" />
-          <img src={mascotHand} alt="" className="absolute top-[35%] left-[75%] w-[48%] h-auto" />
+          <img
+            src={mascot}
+            alt="아이슈 마스코트"
+            className="relative w-full h-auto object-contain"
+          />
+          <img
+            src={mascotGlass}
+            alt=""
+            className="absolute top-[24%] left-[16%] w-[70%] h-auto animate-glasses"
+          />
+          <img
+            src={mascotHand}
+            alt=""
+            className="absolute top-[35%] left-[75%] w-[48%] h-auto"
+          />
         </div>
 
         <div className="flex flex-col items-center gap-1">
           <img src={logo} alt="아이슈" className="w-20 h-auto" />
-          <p className="text-sm text-[#5b9cf6] opacity-70">AI로 요즘 이슈를 알아보다.</p>
+          <p className="text-sm text-[#5b9cf6] opacity-70">
+            AI로 요즘 이슈를 알아보다.
+          </p>
         </div>
       </div>
     </div>

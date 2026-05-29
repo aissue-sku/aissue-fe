@@ -5,7 +5,7 @@ import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  const target = env.API_PROXY_TARGET || "http://192.0.0.2:8080";
+  const target = env.API_PROXY_TARGET || "http://192.168.50.39:8080";
 
   return {
     plugins: [
@@ -13,7 +13,12 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
       VitePWA({
         registerType: "autoUpdate",
-        includeAssets: ["favicon.svg", "icon.svg", "icon-192.png", "icon-512.png"],
+        includeAssets: [
+          "favicon.svg",
+          "icon.svg",
+          "icon-192.png",
+          "icon-512.png",
+        ],
         manifest: {
           name: "AIssue",
           short_name: "AIssue",

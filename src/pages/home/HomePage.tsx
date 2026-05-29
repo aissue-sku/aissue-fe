@@ -46,11 +46,25 @@ const KeywordSection = ({
     if (!selected) return;
     let cancelled = false;
     Promise.resolve()
-      .then(() => { if (!cancelled) setLoadingNews(true); })
+      .then(() => {
+        if (!cancelled) setLoadingNews(true);
+      })
       .then(() => keywordService.getKeywordNews(selected, undefined, 3))
-      .then((data) => { if (!cancelled) { setNews(data?.content ?? []); setLoadingNews(false); } })
-      .catch(() => { if (!cancelled) { setNews([]); setLoadingNews(false); } });
-    return () => { cancelled = true; };
+      .then((data) => {
+        if (!cancelled) {
+          setNews(data?.content ?? []);
+          setLoadingNews(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setNews([]);
+          setLoadingNews(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [selected]);
 
   if (loadingKeywords)
@@ -298,7 +312,8 @@ const HomePage = () => {
       const pageRect = pageRef.current.getBoundingClientRect();
       const carouselRect = carouselRef.current.getBoundingClientRect();
       const pageH = pageRef.current.offsetHeight;
-      const centerFromTop = (carouselRect.top - pageRect.top) + carouselRect.height / 2;
+      const centerFromTop =
+        carouselRect.top - pageRect.top + carouselRect.height / 2;
       const pct = ((pageH - centerFromTop) / pageH) * 100;
       setBgPct(`${pct.toFixed(1)}%`);
     };
@@ -407,7 +422,9 @@ const HomePage = () => {
     <div
       ref={pageRef}
       className="relative min-h-full"
-      style={{ background: `linear-gradient(to top, #E1F3FF ${bgPct}, white ${bgPct})` }}
+      style={{
+        background: `linear-gradient(to top, #E1F3FF ${bgPct}, white ${bgPct})`,
+      }}
     >
       {/* 알림 버튼 */}
       <div className="absolute top-4 right-5 z-10">
@@ -484,8 +501,12 @@ const HomePage = () => {
       </div>
 
       {/* 뉴스 카드 캐러셀 */}
+      <div className="min-h-[calc(clamp(348px,_88vw,_500px)+1rem)]">
       {loading || articles.length === 0 ? (
-        <div ref={carouselRef} className="w-full flex px-[calc(50%-clamp(124px,_31.5vw,_180px))] pb-4 items-center">
+        <div
+          ref={carouselRef}
+          className="w-full flex px-[calc(50%-clamp(124px,_31.5vw,_180px))] pb-4 items-center"
+        >
           {[0, 1, 2].map((i) => (
             <div
               key={i}
@@ -498,7 +519,10 @@ const HomePage = () => {
         </div>
       ) : (
         <div
-          ref={(el) => { scrollRef.current = el; carouselRef.current = el; }}
+          ref={(el) => {
+            scrollRef.current = el;
+            carouselRef.current = el;
+          }}
           className="w-full overflow-x-scroll flex px-[calc(50%-clamp(124px,_31.5vw,_180px))] pb-4 no-scrollbar items-center"
         >
           {clonedArticles.map((article, index) => {
@@ -533,6 +557,7 @@ const HomePage = () => {
           })}
         </div>
       )}
+      </div>
 
       {/* 키워드 뉴스 섹션 */}
       <div className="mt-2 pb-6">

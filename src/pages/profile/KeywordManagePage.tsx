@@ -100,7 +100,7 @@ const KeywordManagePage = () => {
   return (
     <div className="h-full overflow-hidden flex flex-col bg-[#f5f5f5] animate-slide-in">
       {/* 헤더 */}
-      <header className="bg-white border-b border-[#f0f0f0] h-14 flex items-center justify-center px-5 shrink-0 relative">
+      <header className="bg-white border-b border-[#f0f0f0] h-18 flex items-center justify-center px-5 shrink-0 relative">
         <button
           onClick={() => navigate(-1)}
           className="absolute left-5 p-1 cursor-pointer active:opacity-60 transition-opacity"

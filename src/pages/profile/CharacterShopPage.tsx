@@ -471,7 +471,7 @@ const CharacterShopPage = () => {
           <img
             src={mascotGlass}
             alt=""
-            className="absolute top-[10%] left-[15%] w-[70%] h-auto animate-glasses"
+            className="absolute top-[10%] left-[16%] w-[70%] h-auto animate-glasses"
             style={{ filter: heroFilter }}
           />
           <img
@@ -559,7 +559,9 @@ const CharacterShopPage = () => {
             )
           ) : (
             <button className="w-full h-[50px] rounded-[10px] text-[16px] font-bold text-white bg-[#51A2FF] active:opacity-80 transition-opacity">
-              {currentSelected ? `${currentSelected.name} 구매하기 (${currentSelected.price}P)` : ""}
+              {currentSelected
+                ? `${currentSelected.name} 구매하기 (${currentSelected.price}P)`
+                : ""}
             </button>
           )}
         </div>,

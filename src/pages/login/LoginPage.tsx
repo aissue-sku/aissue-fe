@@ -19,7 +19,7 @@ const LoginPage = () => {
   return (
     <div className="h-dvh overflow-hidden bg-[#f2f2f7] flex flex-col items-center px-5 pt-[6.75rem] pb-10 animate-page-enter">
       {/* 마스코트 + 로고 */}
-      <div className="flex flex-col items-center mb-8 -mt-8">
+      <div className="flex flex-col items-center mb-12 -mt-16">
         <div className="relative w-28">
           <img
             src={mascot}

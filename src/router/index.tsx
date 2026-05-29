@@ -14,6 +14,8 @@ import AnalysisTrustPage from "../pages/analysis/AnalysisTrustPage";
 import ProfilePage from "../pages/profile/ProfilePage";
 import CharacterShopPage from "../pages/profile/CharacterShopPage";
 import KeywordManagePage from "../pages/profile/KeywordManagePage";
+import AnalysisHistoryPage from "../pages/profile/AnalysisHistoryPage";
+import GuidePage from "../pages/profile/GuidePage";
 
 const router = createBrowserRouter([
   { path: "/", element: <SplashPage /> },
@@ -33,6 +35,8 @@ const router = createBrowserRouter([
       { path: "/profile", element: <ProfilePage /> },
       { path: "/profile/shop", element: <CharacterShopPage /> },
       { path: "/profile/keywords", element: <KeywordManagePage /> },
+      { path: "/profile/history", element: <AnalysisHistoryPage /> },
+      { path: "/profile/guide", element: <GuidePage /> },
     ],
   },
 ]);

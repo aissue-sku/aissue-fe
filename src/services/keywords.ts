@@ -1,6 +1,6 @@
 // CONTENT-COLLECTION-SERVICE (Gateway → :8083)
 import { http } from './client';
-import type { ApiResponse, TrendingKeyword, KeywordNewsPage } from '../types/api';
+import type { ApiResponse, TrendingKeyword, KeywordNewsPage, PopularKeyword } from '../types/api';
 
 export const keywordService = {
   getTrending: (): Promise<TrendingKeyword[]> =>
@@ -27,4 +27,9 @@ export const keywordService = {
 
   unsubscribe: (keyword: string): Promise<void> =>
     http.delete(`/api/notifications/subscriptions/${encodeURIComponent(keyword)}`),
+
+  getPopularKeywords: (): Promise<PopularKeyword[]> =>
+    http
+      .get<ApiResponse<PopularKeyword[]>>('/api/notifications/popular-keywords')
+      .then((res) => res.data),
 };

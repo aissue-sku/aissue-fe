@@ -25,11 +25,10 @@ const SignupPage = () => {
     await signup({ username, name, password });
   };
 
-
   return (
     <div className="min-h-dvh bg-[#f2f2f7] flex flex-col animate-page-enter">
       {/* 헤더 */}
-      <div className="h-14 flex items-center px-5 pt-5">
+      <div className="h-14 flex items-center px-5 pt-10">
         <button
           onClick={() => navigate(-1)}
           className="size-6 flex items-center justify-center"
@@ -38,21 +37,21 @@ const SignupPage = () => {
         </button>
       </div>
 
-      <div className="flex flex-col items-center px-5 pt-6 pb-10">
+      <div className="flex flex-col items-center px-5 pb-10">
         {/* 마스코트 + 타이틀 */}
-        <div className="flex flex-col items-center mb-3">
+        <div className="flex flex-col items-center mb-12">
           <img
             src={mascot}
             alt="아이슈 마스코트"
             className="w-28 h-auto object-contain"
           />
-          <span className="text-base font-semibold text-gray-800 mt-2">
+          <span className="text-[24px] font-semibold text-gray-800 mt-2">
             회원가입
           </span>
         </div>
 
         {/* 회원가입 카드 */}
-        <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm px-6 py-8">
+        <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm px-6 py-8 -mt-6">
           <form onSubmit={handleSignup} className="flex flex-col gap-5">
             {/* 아이디 */}
             <div className="flex flex-col gap-2">
@@ -64,7 +63,7 @@ const SignupPage = () => {
                 placeholder="영문·숫자 4~20자"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.username ? 'border-red-400' : 'border-gray-200'}`}
+                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.username ? "border-red-400" : "border-gray-200"}`}
               />
               {fieldErrors?.username && (
                 <p className="text-xs text-red-500">{fieldErrors.username}</p>
@@ -81,7 +80,7 @@ const SignupPage = () => {
                 placeholder="홍길동"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.name ? 'border-red-400' : 'border-gray-200'}`}
+                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.name ? "border-red-400" : "border-gray-200"}`}
               />
               {fieldErrors?.name && (
                 <p className="text-xs text-red-500">{fieldErrors.name}</p>
@@ -98,7 +97,7 @@ const SignupPage = () => {
                 placeholder="영문·숫자·특수문자 포함 8~20자"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.password ? 'border-red-400' : 'border-gray-200'}`}
+                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.password ? "border-red-400" : "border-gray-200"}`}
               />
               {fieldErrors?.password && (
                 <p className="text-xs text-red-500">{fieldErrors.password}</p>
@@ -115,7 +114,7 @@ const SignupPage = () => {
                 placeholder="비밀번호를 다시 입력하세요"
                 value={passwordConfirm}
                 onChange={(e) => setPasswordConfirm(e.target.value)}
-                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${localError ? 'border-red-400' : 'border-gray-200'}`}
+                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${localError ? "border-red-400" : "border-gray-200"}`}
               />
               {localError && (
                 <p className="text-xs text-red-500">{localError}</p>
@@ -123,7 +122,7 @@ const SignupPage = () => {
             </div>
 
             {/* 일반 에러 메시지 */}
-            {(error && !fieldErrors) && (
+            {error && !fieldErrors && (
               <p className="text-xs text-red-500 -mt-2">{error}</p>
             )}
 

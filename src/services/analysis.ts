@@ -6,6 +6,7 @@ import type {
   AnalysisResponse,
   CritiqueResponse,
   ContentAnalysisResponse,
+  AnalysisHistoryItem,
 } from '../types/api';
 
 export const analysisService = {
@@ -28,5 +29,10 @@ export const analysisService = {
   submitContent: (type: 'URL' | 'TEXT', content: string): Promise<ContentAnalysisResponse> =>
     http
       .post<ApiResponse<ContentAnalysisResponse>>('/api/contents/submit', { type, content })
+      .then((res) => res.data),
+
+  getHistory: (): Promise<AnalysisHistoryItem[]> =>
+    http
+      .get<ApiResponse<AnalysisHistoryItem[]>>('/api/contents/analysis/history')
       .then((res) => res.data),
 };

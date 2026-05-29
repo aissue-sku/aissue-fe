@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, TrendingUp } from "lucide-react";
 import fireIcon from "../../assets/fire.svg";
@@ -6,15 +6,24 @@ import bellIcon from "../../assets/bell.svg";
 import bellBlueIcon from "../../assets/bell-blue.svg";
 import { useKeywords } from "../../hooks/useKeywords";
 import UpgradeModal from "../../components/common/UpgradeModal";
-
-const CATEGORIES = ["경제", "사회", "과학"];
+import { keywordService } from "../../services";
+import type { PopularKeyword } from "../../types/api";
 
 const SearchPage = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("추천");
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const { keywords, toggleSubscribe } = useKeywords();
+  const [popularKeywords, setPopularKeywords] = useState<PopularKeyword[]>([]);
+  const [popularLoading, setPopularLoading] = useState(true);
+
+  useEffect(() => {
+    keywordService
+      .getPopularKeywords()
+      .then(setPopularKeywords)
+      .catch(() => {})
+      .finally(() => setPopularLoading(false));
+  }, []);
 
   const goToResult = (keyword: string) => {
     if (!keyword.trim()) return;
@@ -44,24 +53,24 @@ const SearchPage = () => {
         )}
       </div>
 
-      {/* 인기 검색어 카테고리 */}
+      {/* 인기 검색어 */}
       <div className="flex items-center gap-2 mb-8 flex-wrap">
-        <span className="text-sm text-gray-400 flex-shrink-0">
-          인기 검색어:
-        </span>
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`px-4 py-1 rounded-full text-sm font-semibold transition-colors cursor-pointer ${
-              activeCategory === cat
-                ? "bg-[#5b9cf6] text-white"
-                : "text-gray-400"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
+        <span className="text-sm text-gray-400 flex-shrink-0">인기 검색어:</span>
+        {popularLoading ? (
+          [40, 56, 48].map((w) => (
+            <div key={w} className="h-7 rounded-full bg-gray-200 animate-pulse" style={{ width: w }} />
+          ))
+        ) : (
+          popularKeywords.map((item) => (
+            <button
+              key={item.keyword}
+              onClick={() => goToResult(item.keyword)}
+              className="px-4 py-1 rounded-full text-sm font-semibold bg-[#F2F3F5] text-[#697584] active:bg-[#5b9cf6] active:text-white transition-colors cursor-pointer"
+            >
+              {item.keyword}
+            </button>
+          ))
+        )}
       </div>
 
       {/* 급상승 키워드 */}
@@ -94,7 +103,7 @@ const SearchPage = () => {
             {/* 키워드 */}
             <span className="flex-1 text-[15px] font-semibold text-gray-800">
               {item.keyword}
-              {item.hot && (
+              {item.hot && idx < 3 && (
                 <img
                   src={fireIcon}
                   alt=""

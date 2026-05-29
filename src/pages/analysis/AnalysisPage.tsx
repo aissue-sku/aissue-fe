@@ -55,7 +55,7 @@ const AnalysisPage = () => {
         if (cancelled) return;
 
         if (submitResult) {
-          navigate("/analysis/trust", {
+          navigate("/analysis/result", {
             state: { submitResult, title: locationState?.title },
           });
         } else {
