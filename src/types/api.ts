@@ -187,6 +187,25 @@ export interface AnalysisHistoryItem {
   analyzedAt: string;
 }
 
+// ── 캐릭터 상점 ──────────────────────────────────────────────────────────────
+export interface CharacterItem {
+  key: string;
+  type?: string;
+  name: string;
+  purchased: boolean;
+  price: number;
+}
+
+export interface CharacterDataResponse {
+  equipped: {
+    hat: CharacterItem | null;
+    face: CharacterItem | null;
+    clothes: CharacterItem | null;
+    color: CharacterItem | null;
+  };
+  items: CharacterItem[];
+}
+
 // ── 유저 ─────────────────────────────────────────────────────────────────────
 export interface UserProfile {
   userId: number;

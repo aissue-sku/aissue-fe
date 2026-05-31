@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
+import { userService } from "../../services/user";
+import type { CharacterItem } from "../../types/api";
 import mascot from "../../assets/mascot.png";
 import mascotGlass from "../../assets/mascot-glass.png";
 import mascotHand from "../../assets/mascot-hand.png";
@@ -45,6 +47,7 @@ interface Character {
   heroImage?: string;
   filter: string;
   category: string;
+  itemCode?: string;
 }
 
 const CHARACTERS: Character[] = [
@@ -55,6 +58,7 @@ const CHARACTERS: Character[] = [
     image: mascot,
     filter: "none",
     category: "색상",
+    itemCode: "AISSUE",
   },
   {
     id: "2",
@@ -63,6 +67,7 @@ const CHARACTERS: Character[] = [
     image: mascot,
     filter: "hue-rotate(305deg) saturate(1.1) brightness(1.2)",
     category: "색상",
+    itemCode: "JANMANG",
   },
   {
     id: "3",
@@ -71,6 +76,7 @@ const CHARACTERS: Character[] = [
     image: mascot,
     filter: "hue-rotate(155deg) saturate(0.9) brightness(1.1)",
     category: "색상",
+    itemCode: "SUNSET",
   },
   {
     id: "4",
@@ -79,6 +85,7 @@ const CHARACTERS: Character[] = [
     image: mascot,
     filter: "hue-rotate(40deg) saturate(0.85) brightness(1.1)",
     category: "색상",
+    itemCode: "RETRO",
   },
   {
     id: "5",
@@ -87,6 +94,7 @@ const CHARACTERS: Character[] = [
     image: mascot,
     filter: "hue-rotate(225deg) saturate(0.85) brightness(1.2)",
     category: "색상",
+    itemCode: "SWEET",
   },
   {
     id: "6",
@@ -95,6 +103,7 @@ const CHARACTERS: Character[] = [
     image: mascot,
     filter: "hue-rotate(345deg) saturate(1.0) brightness(1.1)",
     category: "색상",
+    itemCode: "COOL",
   },
   {
     id: "h1",
@@ -104,6 +113,7 @@ const CHARACTERS: Character[] = [
     heroImage: mascotHat1,
     filter: "none",
     category: "모자",
+    itemCode: "MANGO_HAT",
   },
   {
     id: "h2",
@@ -113,6 +123,7 @@ const CHARACTERS: Character[] = [
     heroImage: mascotHat2,
     filter: "none",
     category: "모자",
+    itemCode: "BERET",
   },
   {
     id: "h3",
@@ -122,6 +133,7 @@ const CHARACTERS: Character[] = [
     heroImage: mascotHat3,
     filter: "none",
     category: "모자",
+    itemCode: "BEAR_HOOD",
   },
   {
     id: "h4",
@@ -131,24 +143,27 @@ const CHARACTERS: Character[] = [
     heroImage: mascotHat4,
     filter: "none",
     category: "모자",
+    itemCode: "GENTLEMEN_HAT",
   },
   {
     id: "h5",
     name: "야구 모자",
-    price: 200,
+    price: 150,
     image: hat5,
     heroImage: mascotHat5,
     filter: "none",
     category: "모자",
+    itemCode: "BASEBALL_CAP",
   },
   {
     id: "h6",
     name: "헤드폰",
-    price: 350,
+    price: 300,
     image: hat6,
     heroImage: mascotHat6,
     filter: "none",
     category: "모자",
+    itemCode: "HEADPHONE",
   },
   {
     id: "f1",
@@ -157,54 +172,61 @@ const CHARACTERS: Character[] = [
     image: mascot,
     filter: "none",
     category: "얼굴",
+    itemCode: "BASIC",
   },
   {
     id: "f2",
     name: "행복",
-    price: 200,
+    price: 100,
     image: mascotHappy,
     filter: "none",
     category: "얼굴",
+    itemCode: "HAPPY",
   },
   {
     id: "f3",
     name: "장난",
-    price: 200,
+    price: 100,
     image: mascotFunny,
     filter: "none",
     category: "얼굴",
+    itemCode: "MISCHIEF",
   },
   {
     id: "f4",
     name: "슬픔",
-    price: 200,
+    price: 100,
     image: mascotSad,
     filter: "none",
     category: "얼굴",
+    itemCode: "SAD",
   },
   {
     id: "f5",
     name: "화남",
-    price: 250,
+    price: 150,
     image: mascotAngry,
     filter: "none",
     category: "얼굴",
+    itemCode: "ANGRY",
   },
   {
     id: "f6",
     name: "예민",
-    price: 250,
+    price: 150,
     image: mascotGlare,
     filter: "none",
     category: "얼굴",
+    itemCode: "SENSITIVE",
   },
   {
     id: "f7",
     name: "피곤",
-    price: 200,
+    price: 100,
     image: mascotTired,
     filter: "none",
     category: "얼굴",
+    itemCode: "TIRED",
   },
   {
     id: "c1",
@@ -214,6 +236,7 @@ const CHARACTERS: Character[] = [
     heroImage: mascotBrownshirts,
     filter: "none",
     category: "옷",
+    itemCode: "BROWN_SHIRT",
   },
   {
     id: "c2",
@@ -223,6 +246,7 @@ const CHARACTERS: Character[] = [
     heroImage: mascotGreenshirts,
     filter: "none",
     category: "옷",
+    itemCode: "GREEN_SHIRT",
   },
   {
     id: "c3",
@@ -232,6 +256,7 @@ const CHARACTERS: Character[] = [
     heroImage: mascotPajama,
     filter: "none",
     category: "옷",
+    itemCode: "PAJAMA",
   },
   {
     id: "c4",
@@ -241,6 +266,7 @@ const CHARACTERS: Character[] = [
     heroImage: mascotPants,
     filter: "none",
     category: "옷",
+    itemCode: "PANTS",
   },
   {
     id: "c5",
@@ -250,6 +276,7 @@ const CHARACTERS: Character[] = [
     heroImage: mascotPinkskirt,
     filter: "none",
     category: "옷",
+    itemCode: "PINK_SKIRT",
   },
   {
     id: "c6",
@@ -259,18 +286,19 @@ const CHARACTERS: Character[] = [
     heroImage: mascotSuit,
     filter: "none",
     category: "옷",
+    itemCode: "SUIT",
   },
 ];
 
 // 포인트 배지 (카드용 소형)
-const PointBadgeSm = ({ price }: { price: number }) => (
+const PointBadgeSm = ({ price, owned, equipped }: { price: number; owned: boolean; equipped: boolean }) => (
   <div
-    className={`flex items-center justify-center border border-[#51A2FF] rounded-full py-0.5 gap-0.5 ${price === 0 ? "px-4" : "pl-3 pr-1.5"}`}
+    className={`flex items-center justify-center border border-[#51A2FF] rounded-full py-0.5 gap-0.5 ${owned ? "px-4" : "pl-3 pr-1.5"}`}
   >
     <span className="text-[16px] font-bold text-[#3B91F4] leading-[1.6]">
-      {price === 0 ? "보유중" : price}
+      {equipped ? "착용중" : owned ? "보유중" : price}
     </span>
-    {price > 0 && (
+    {!owned && (
       <div className="w-[18px] h-[18px] rounded-full bg-[#EEF8FF] flex items-center justify-center shrink-0">
         <span className="text-[10px] font-bold text-[#3B91F4]">P</span>
       </div>
@@ -282,20 +310,25 @@ const PointBadgeSm = ({ price }: { price: number }) => (
 interface CharacterCardProps {
   character: Character;
   selected: boolean;
+  owned: boolean;
+  equipped: boolean;
   onSelect: () => void;
 }
 
 const CharacterCard = ({
   character,
   selected,
+  owned,
+  equipped,
   onSelect,
 }: CharacterCardProps) => (
   <button
     onClick={onSelect}
-    className="relative flex flex-col items-center justify-end bg-[#FBFBFB] rounded-[15px] overflow-hidden cursor-pointer active:opacity-80 transition-opacity"
+    className="relative flex flex-col items-center justify-end rounded-[15px] overflow-hidden cursor-pointer active:opacity-80 transition-opacity"
     style={{
-      width: 172,
+      width: "100%",
       height: 212,
+      background: equipped ? "#EEF8FF" : "#FBFBFB",
       border: selected ? "1.5px solid #51A2FF" : "1px solid #F5F5F5",
     }}
   >
@@ -324,7 +357,7 @@ const CharacterCard = ({
     </p>
     {/* 가격 배지 */}
     <div className="absolute" style={{ bottom: 15 }}>
-      <PointBadgeSm price={character.price} />
+      <PointBadgeSm price={character.price} owned={owned} equipped={equipped} />
     </div>
   </button>
 );
@@ -338,11 +371,53 @@ const CharacterShopPage = () => {
   const [selectedColorId, setSelectedColorId] = useState<string | null>(null);
   const [selectedClothId, setSelectedClothId] = useState<string | null>(null);
   const [isExiting, setIsExiting] = useState(false);
-  const [equippedMode, setEquippedMode] = useState(false);
+  // 카테고리별 현재 착용 중인 캐릭터 id
+  const [equippedIds, setEquippedIds] = useState<Partial<Record<string, string>>>({});
+  // 보유한 아이템 id (기본 제공 + 구매 완료)
+  const [ownedIds, setOwnedIds] = useState<Set<string>>(
+    () => new Set(CHARACTERS.filter((c) => c.price === 0).map((c) => c.id)),
+  );
+  const [purchaseError, setPurchaseError] = useState<string | null>(null);
+  const [purchasing, setPurchasing] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     const main = document.querySelector("main");
     if (main) main.scrollTop = 0;
+  }, []);
+
+  // 마운트 시 전체 캐릭터 정보 로드
+  useEffect(() => {
+    userService.getCharacter().then((data) => {
+      // 보유 아이템 초기화
+      const owned = new Set(
+        data.items
+          .filter((item) => item.purchased)
+          .flatMap((item) => {
+            const char = CHARACTERS.find((c) => c.itemCode === item.key);
+            return char ? [char.id] : [];
+          }),
+      );
+      setOwnedIds(owned);
+
+      // 착용 중인 아이템으로 선택 상태 초기화
+      const equipped: Partial<Record<string, string>> = {};
+      const slots: Array<[CharacterItem | null, string, (id: string | null) => void]> = [
+        [data.equipped.hat,     "모자", setSelectedHatId],
+        [data.equipped.face,    "얼굴", setSelectedFaceId],
+        [data.equipped.clothes, "옷",   setSelectedClothId],
+        [data.equipped.color,   "색상", setSelectedColorId],
+      ];
+      for (const [slotItem, category, setSelected] of slots) {
+        if (!slotItem) continue;
+        const char = CHARACTERS.find((c) => c.itemCode === slotItem.key);
+        if (char) {
+          equipped[category] = char.id;
+          setSelected(char.id);
+        }
+      }
+      setEquippedIds(equipped);
+    }).catch(() => {});
   }, []);
 
   const selectedHat = CHARACTERS.find((c) => c.id === selectedHatId);
@@ -359,34 +434,25 @@ const CharacterShopPage = () => {
   };
 
   const handleSelect = (character: Character) => {
-    const wasSelected = getSelectedId(character.category) === character.id;
-    setEquippedMode(wasSelected && character.price === 0);
-    // 이미 선택된 아이템도 항상 선택 유지 (해제는 플로팅 버튼으로)
     if (character.category === "모자") setSelectedHatId(character.id);
     else if (character.category === "얼굴") setSelectedFaceId(character.id);
     else if (character.category === "색상") setSelectedColorId(character.id);
     else if (character.category === "옷") setSelectedClothId(character.id);
-  };
-
-  const handleUnequip = () => {
-    if (!currentSelected) return;
-    if (currentSelected.category === "모자") setSelectedHatId(null);
-    else if (currentSelected.category === "얼굴") setSelectedFaceId(null);
-    else if (currentSelected.category === "색상") setSelectedColorId(null);
-    else if (currentSelected.category === "옷") setSelectedClothId(null);
-    setEquippedMode(false);
+    setPurchaseError(null);
   };
 
   const handleCategoryChange = (cat: string) => {
     if (cat === activeCategory) return;
     // 착용하지 않은 상태로 탭 이동 시 현재 카테고리 선택 초기화
-    if (!equippedMode && currentSelected) {
-      if (activeCategory === "모자") setSelectedHatId(null);
-      else if (activeCategory === "얼굴") setSelectedFaceId(null);
-      else if (activeCategory === "색상") setSelectedColorId(null);
-      else if (activeCategory === "옷") setSelectedClothId(null);
+    const equippedId = equippedIds[activeCategory] ?? null;
+    const selId = getSelectedId(activeCategory);
+    if (selId !== equippedId) {
+      if (activeCategory === "모자") setSelectedHatId(equippedId);
+      else if (activeCategory === "얼굴") setSelectedFaceId(equippedId);
+      else if (activeCategory === "색상") setSelectedColorId(equippedId);
+      else if (activeCategory === "옷") setSelectedClothId(equippedId);
     }
-    setEquippedMode(false);
+    setPurchaseError(null);
     setActiveCategory(cat);
   };
 
@@ -401,6 +467,88 @@ const CharacterShopPage = () => {
           : activeCategory === "옷"
             ? selectedCloth
             : undefined;
+
+  // 선택된 아이템이 현재 착용 중인 아이템인지
+  const isCurrentEquipped =
+    !!currentSelected && equippedIds[activeCategory] === currentSelected.id;
+
+  // 선택된 아이템을 보유 중인지
+  const isCurrentOwned =
+    !!currentSelected && ownedIds.has(currentSelected.id);
+
+  const setEquipped = (category: string, id: string | null) => {
+    setEquippedIds((prev) => ({ ...prev, [category]: id ?? undefined }));
+  };
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 2000);
+  };
+
+  const handlePurchase = async () => {
+    if (!currentSelected?.itemCode || purchasing) return;
+    setPurchaseError(null);
+    setPurchasing(true);
+    try {
+      await userService.purchaseItem(currentSelected.itemCode);
+      setOwnedIds((prev) => new Set([...prev, currentSelected.id]));
+      await userService.equipItem(currentSelected.itemCode);
+      setEquipped(currentSelected.category, currentSelected.id);
+      showToast(`${currentSelected.name} 구매 완료!`);
+    } catch (e) {
+      const status = (e as { status?: number }).status;
+      if (status === 409) {
+        setOwnedIds((prev) => new Set([...prev, currentSelected.id]));
+        try {
+          await userService.equipItem(currentSelected.itemCode);
+          setEquipped(currentSelected.category, currentSelected.id);
+        } catch {
+          setPurchaseError("착용에 실패했습니다.");
+        }
+      } else if (status === 400) {
+        setPurchaseError("구매할 수 없는 아이템입니다.");
+      } else {
+        setPurchaseError("포인트가 부족하거나 구매에 실패했습니다.");
+      }
+    } finally {
+      setPurchasing(false);
+    }
+  };
+
+  const handleEquip = async () => {
+    if (!currentSelected?.itemCode) return;
+    try {
+      await userService.equipItem(currentSelected.itemCode);
+      setEquipped(currentSelected.category, currentSelected.id);
+    } catch {
+      // 착용 실패 시 UI 변경 없음
+    }
+  };
+
+  const handleUnequip = async () => {
+    if (!currentSelected) return;
+    try {
+      if (currentSelected.category === "색상") {
+        await userService.equipItem("AISSUE");
+      } else if (currentSelected.category === "얼굴") {
+        await userService.equipItem("BASIC");
+      } else if (currentSelected.category === "모자") {
+        await userService.unequipItem("HAT");
+      } else if (currentSelected.category === "옷") {
+        await userService.unequipItem("CLOTHES");
+      }
+      if (currentSelected.category === "모자") setSelectedHatId(null);
+      else if (currentSelected.category === "얼굴") setSelectedFaceId(null);
+      else if (currentSelected.category === "색상") {
+        // 색상 해제 = 아이슈(기본)로 복귀
+        const defaultColor = CHARACTERS.find((c) => c.itemCode === "AISSUE");
+        setSelectedColorId(defaultColor?.id ?? null);
+      } else if (currentSelected.category === "옷") setSelectedClothId(null);
+      setEquipped(currentSelected.category, null);
+    } catch {
+      // 해제 실패 시 UI 변경 없음
+    }
+  };
 
   // 히어로 합성
   const heroBase = selectedFace ? selectedFace.image : mascot;
@@ -450,7 +598,7 @@ const CharacterShopPage = () => {
             src={heroBase}
             alt="아이슈 마스코트"
             className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-[90%] h-auto"
-            style={{ filter: heroFilter, transition: "filter 0.3s ease" }}
+            style={{ filter: heroFilter }}
           />
           {/* 옷 오버레이 */}
           {heroCloth && (
@@ -509,11 +657,8 @@ const CharacterShopPage = () => {
         {/* 캐릭터 그리드 */}
         <div
           key={activeCategory}
-          className="grid gap-[6px] px-5 pt-2"
-          style={{
-            gridTemplateColumns: "repeat(2, 172px)",
-            paddingBottom: 60,
-          }}
+          className="grid grid-cols-2 gap-[6px] px-5 pt-2"
+          style={{ paddingBottom: 60 }}
         >
           {CHARACTERS.filter((c) => c.category === activeCategory).map(
             (character, index) => (
@@ -526,6 +671,8 @@ const CharacterShopPage = () => {
                 <CharacterCard
                   character={character}
                   selected={getSelectedId(character.category) === character.id}
+                  owned={ownedIds.has(character.id)}
+                  equipped={equippedIds[character.category] === character.id}
                   onSelect={() => handleSelect(character)}
                 />
               </div>
@@ -536,33 +683,67 @@ const CharacterShopPage = () => {
 
       {createPortal(
         <div
-          className="fixed bottom-16 left-0 right-0 z-50 bg-white border-t border-[#F0F0F0] shadow-[0_-4px_12px_rgba(0,0,0,0.06)] px-5 py-3 transition-transform duration-300 ease-out"
+          className="fixed bottom-16 left-1/2 w-full max-w-[430px] z-50 bg-white border-t border-[#F0F0F0] shadow-[0_-4px_12px_rgba(0,0,0,0.06)] px-5 py-3 transition-transform duration-300 ease-out"
           style={{
-            transform: currentSelected ? "translateY(0)" : "translateY(300%)",
+            // 색상/얼굴은 이미 착용 중이면 버튼 바 숨김
+            transform:
+              currentSelected &&
+              !(isCurrentEquipped && (activeCategory === "색상" || activeCategory === "얼굴"))
+                ? "translateX(-50%) translateY(0)"
+                : "translateX(-50%) translateY(300%)",
           }}
         >
-          {currentSelected && currentSelected.price === 0 ? (
-            equippedMode ? (
+          {/* 구매 성공 토스트 */}
+          {toast && (
+            <div className="w-full flex justify-center mb-2">
+              <span className="bg-[#1A1A1A] text-white text-[13px] font-semibold px-4 py-2 rounded-full">
+                {toast}
+              </span>
+            </div>
+          )}
+          {isCurrentOwned ? (
+            // 보유 중인 아이템
+            activeCategory === "색상" || activeCategory === "얼굴" ? (
+              // 색상/얼굴: 해제 없이 착용하기만
+              <button
+                onClick={handleEquip}
+                className="w-full h-[50px] rounded-[10px] text-[16px] font-bold text-white bg-[#51A2FF] active:opacity-80 transition-opacity"
+              >
+                {currentSelected!.name} 착용하기
+              </button>
+            ) : isCurrentEquipped ? (
+              // 모자/옷: 해제 가능
               <button
                 onClick={handleUnequip}
                 className="w-full h-[50px] rounded-[10px] text-[16px] font-bold text-white bg-[#FF6B6B] active:opacity-80 transition-opacity"
               >
-                {currentSelected.name} 해제하기
+                {currentSelected!.name} 해제하기
               </button>
             ) : (
               <button
-                onClick={() => setEquippedMode(true)}
+                onClick={handleEquip}
                 className="w-full h-[50px] rounded-[10px] text-[16px] font-bold text-white bg-[#51A2FF] active:opacity-80 transition-opacity"
               >
-                {currentSelected.name} 착용하기
+                {currentSelected!.name} 착용하기
               </button>
             )
           ) : (
-            <button className="w-full h-[50px] rounded-[10px] text-[16px] font-bold text-white bg-[#51A2FF] active:opacity-80 transition-opacity">
-              {currentSelected
-                ? `${currentSelected.name} 구매하기 (${currentSelected.price}P)`
-                : ""}
-            </button>
+            <div className="flex flex-col gap-1.5">
+              {purchaseError && (
+                <p className="text-[13px] text-[#FF6B6B] text-center">{purchaseError}</p>
+              )}
+              <button
+                onClick={handlePurchase}
+                disabled={purchasing}
+                className="w-full h-[50px] rounded-[10px] text-[16px] font-bold text-white bg-[#51A2FF] active:opacity-80 transition-opacity disabled:opacity-60"
+              >
+                {purchasing
+                  ? "처리 중..."
+                  : currentSelected
+                    ? `${currentSelected.name} 구매하기 (${currentSelected.price}P)`
+                    : ""}
+              </button>
+            </div>
           )}
         </div>,
         document.body,

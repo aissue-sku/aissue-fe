@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import mascot from "../../assets/mascot.png";
 import mascotHand from "../../assets/mascot-hand.png";
 import { analysisService } from "../../services/analysis";
+import { useMascotConfig } from "../../hooks/useMascotConfig";
 import { ApiError } from "../../services/client";
 import type { CritiqueItem, ContentAnalysisResponse } from "../../types/api";
 
@@ -42,6 +42,7 @@ const AnalysisResultPage = () => {
   const location = useLocation();
   const { contentId, title, submitResult } = (location.state as LocationState) ?? {};
 
+  const mascotConfig = useMascotConfig();
   const [critiques, setCritiques] = useState<CritiqueItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -86,11 +87,23 @@ const AnalysisResultPage = () => {
         {/* 마스코트 */}
         <div className="flex flex-col items-center mb-6">
           <div className="relative w-24">
-            <img src={mascot} alt="아이슈 마스코트" className="w-full h-auto object-contain" />
+            <img
+              src={mascotConfig.faceImage}
+              alt="아이슈 마스코트"
+              className="w-full h-auto object-contain"
+              style={{ filter: mascotConfig.filter }}
+            />
+            {mascotConfig.clothImage && (
+              <img src={mascotConfig.clothImage} alt="" className="absolute top-0 left-0 w-full h-auto" />
+            )}
+            {mascotConfig.hatImage && (
+              <img src={mascotConfig.hatImage} alt="" className="absolute top-0 left-0 w-full h-auto" />
+            )}
             <img
               src={mascotHand}
               alt=""
               className="absolute top-[35%] left-[75%] w-[48%] h-auto"
+              style={{ filter: mascotConfig.filter }}
             />
           </div>
           <h1 className="text-[24px] font-semibold text-[#51A2FF] text-center mt-4 leading-[160%]">

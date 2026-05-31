@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import mascot from "../../assets/mascot.png";
 import bellIcon from "../../assets/bell.svg";
 import bellBlueIcon from "../../assets/bell-blue.svg";
 import mascotHand from "../../assets/mascot-hand.png";
@@ -14,6 +13,7 @@ import {
   notificationService,
   keywordService,
 } from "../../services";
+import { useMascotConfig } from "../../hooks/useMascotConfig";
 
 // ── 키워드 뉴스 섹션 ────────────────────────────────────────────────────────
 const KeywordSection = ({
@@ -293,6 +293,7 @@ const HomePage = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  const mascotConfig = useMascotConfig();
   const [activeIndex, setActiveIndex] = useState(CLONES);
   const scrollRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
@@ -477,19 +478,36 @@ const HomePage = () => {
         <div className="relative w-28">
           <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-52 h-28 bg-[#C8E4FF] rounded-full blur-xl opacity-60" />
           <img
-            src={mascot}
+            src={mascotConfig.faceImage}
             alt="아이슈 마스코트"
             className="relative w-full h-auto object-contain"
+            style={{ filter: mascotConfig.filter }}
           />
+          {mascotConfig.clothImage && (
+            <img
+              src={mascotConfig.clothImage}
+              alt=""
+              className="absolute top-0 left-0 w-full h-auto"
+            />
+          )}
+          {mascotConfig.hatImage && (
+            <img
+              src={mascotConfig.hatImage}
+              alt=""
+              className="absolute top-0 left-0 w-full h-auto"
+            />
+          )}
           <img
             src={mascotGlass}
             alt=""
-            className="absolute top-[8%] left-[16%] w-[70%] h-auto animate-glasses"
+            className="absolute top-[27%] left-[15%] w-[70%] h-auto animate-glasses"
+            style={{ filter: mascotConfig.filter }}
           />
           <img
             src={mascotHand}
             alt=""
             className="absolute top-[35%] left-[75%] w-[48%] h-auto animate-hand"
+            style={{ filter: mascotConfig.filter }}
           />
         </div>
         <h2 className="text-xl font-bold text-[#51A2FF] tracking-normal mt-2">
@@ -502,61 +520,61 @@ const HomePage = () => {
 
       {/* 뉴스 카드 캐러셀 */}
       <div className="min-h-[calc(clamp(348px,_88vw,_500px)+1rem)]">
-      {loading || articles.length === 0 ? (
-        <div
-          ref={carouselRef}
-          className="w-full flex px-[calc(50%-clamp(124px,_31.5vw,_180px))] pb-4 items-center"
-        >
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className={`flex-shrink-0 ${i > 0 ? "-ml-6" : ""}`}
-              style={{ zIndex: i === 1 ? 10 : 1 }}
-            >
-              <NewsCardSkeleton active={i === 1} />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div
-          ref={(el) => {
-            scrollRef.current = el;
-            carouselRef.current = el;
-          }}
-          className="w-full overflow-x-scroll flex px-[calc(50%-clamp(124px,_31.5vw,_180px))] pb-4 no-scrollbar items-center"
-        >
-          {clonedArticles.map((article, index) => {
-            const dist = Math.min(Math.abs(index - CLONES), 5);
-            return (
+        {loading || articles.length === 0 ? (
+          <div
+            ref={carouselRef}
+            className="w-full flex px-[calc(50%-clamp(124px,_31.5vw,_180px))] pb-4 items-center"
+          >
+            {[0, 1, 2].map((i) => (
               <div
-                key={`${article.id}-${index}`}
-                className={`flex-shrink-0 ${index > 0 ? "-ml-6" : ""}`}
-                style={{
-                  zIndex: activeIndex === index ? 10 : 1,
-                  animation: `card-enter 520ms cubic-bezier(0.34, 1.56, 0.64, 1) ${120 + dist * 75}ms both`,
-                }}
+                key={i}
+                className={`flex-shrink-0 ${i > 0 ? "-ml-6" : ""}`}
+                style={{ zIndex: i === 1 ? 10 : 1 }}
               >
-                <NewsCard
-                  article={article}
-                  active={
-                    toArticleIndex(articles.length, index) ===
-                    toArticleIndex(articles.length, activeIndex)
-                  }
-                  onClick={() =>
-                    navigate("/analysis", {
-                      state: {
-                        contentId: article.id,
-                        title: article.title,
-                        autoStart: true,
-                      },
-                    })
-                  }
-                />
+                <NewsCardSkeleton active={i === 1} />
               </div>
-            );
-          })}
-        </div>
-      )}
+            ))}
+          </div>
+        ) : (
+          <div
+            ref={(el) => {
+              scrollRef.current = el;
+              carouselRef.current = el;
+            }}
+            className="w-full overflow-x-scroll flex px-[calc(50%-clamp(124px,_31.5vw,_180px))] pb-4 no-scrollbar items-center"
+          >
+            {clonedArticles.map((article, index) => {
+              const dist = Math.min(Math.abs(index - CLONES), 5);
+              return (
+                <div
+                  key={`${article.id}-${index}`}
+                  className={`flex-shrink-0 ${index > 0 ? "-ml-6" : ""}`}
+                  style={{
+                    zIndex: activeIndex === index ? 10 : 1,
+                    animation: `card-enter 520ms cubic-bezier(0.34, 1.56, 0.64, 1) ${120 + dist * 75}ms both`,
+                  }}
+                >
+                  <NewsCard
+                    article={article}
+                    active={
+                      toArticleIndex(articles.length, index) ===
+                      toArticleIndex(articles.length, activeIndex)
+                    }
+                    onClick={() =>
+                      navigate("/analysis", {
+                        state: {
+                          contentId: article.id,
+                          title: article.title,
+                          autoStart: true,
+                        },
+                      })
+                    }
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* 키워드 뉴스 섹션 */}

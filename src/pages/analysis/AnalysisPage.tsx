@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import mascot from "../../assets/mascot.png";
 import mascotHand from "../../assets/mascot-hand.png";
 import { analysisService } from "../../services/analysis";
 import { ApiError } from "../../services/client";
+import { useMascotConfig } from "../../hooks/useMascotConfig";
 
 const LOADING_DURATION = 3000;
 
@@ -86,6 +86,8 @@ const AnalysisPage = () => {
     };
   }, [loading, navigate, url, locationState]);
 
+  const mascotConfig = useMascotConfig();
+
   const handleAnalyze = () => {
     if (!url.trim()) return;
     setUrlError(null);
@@ -96,11 +98,20 @@ const AnalysisPage = () => {
   if (loading) {
     return (
       <div className="h-full bg-[#F5F5F5] flex flex-col items-center justify-center px-5 gap-8">
-        <img
-          src={mascot}
-          alt="아이슈 마스코트"
-          className="w-36 h-auto object-contain"
-        />
+        <div className="relative w-36">
+          <img
+            src={mascotConfig.faceImage}
+            alt="아이슈 마스코트"
+            className="w-full h-auto object-contain"
+            style={{ filter: mascotConfig.filter }}
+          />
+          {mascotConfig.clothImage && (
+            <img src={mascotConfig.clothImage} alt="" className="absolute top-0 left-0 w-full h-auto" />
+          )}
+          {mascotConfig.hatImage && (
+            <img src={mascotConfig.hatImage} alt="" className="absolute top-0 left-0 w-full h-auto" />
+          )}
+        </div>
         <div className="w-full flex flex-col items-center gap-4">
           <p className="text-[18px] font-bold text-[#51A2FF]">
             신뢰도 확인 중...
@@ -126,14 +137,22 @@ const AnalysisPage = () => {
         {/* 마스코트 */}
         <div className="relative w-36">
           <img
-            src={mascot}
+            src={mascotConfig.faceImage}
             alt="아이슈 마스코트"
             className="w-full h-auto object-contain"
+            style={{ filter: mascotConfig.filter }}
           />
+          {mascotConfig.clothImage && (
+            <img src={mascotConfig.clothImage} alt="" className="absolute top-0 left-0 w-full h-auto" />
+          )}
+          {mascotConfig.hatImage && (
+            <img src={mascotConfig.hatImage} alt="" className="absolute top-0 left-0 w-full h-auto" />
+          )}
           <img
             src={mascotHand}
             alt=""
             className="absolute top-[30%] left-[75%] w-[48%] h-auto animate-hand"
+            style={{ filter: mascotConfig.filter }}
           />
         </div>
 

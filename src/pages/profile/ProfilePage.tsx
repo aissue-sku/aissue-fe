@@ -3,9 +3,9 @@ import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { keywordService, userService } from "../../services";
-import mascot from "../../assets/mascot.png";
 import mascotGlass from "../../assets/mascot-glass.png";
 import mascotHand from "../../assets/mascot-hand.png";
+import { useMascotConfig } from "../../hooks/useMascotConfig";
 import star from "../../assets/star.svg";
 import bellBlue from "../../assets/bell-blue.svg";
 
@@ -211,7 +211,7 @@ const DeleteAccountModal = ({
       onClick={handleClose}
     >
       <div
-        className={`w-full bg-white rounded-t-[24px] px-6 pt-6 pb-10 flex flex-col gap-4 ${exiting ? "animate-slide-down" : "animate-slide-up"}`}
+        className={`w-full max-w-[430px] bg-white rounded-t-[24px] px-6 pt-6 pb-10 flex flex-col gap-4 ${exiting ? "animate-slide-down" : "animate-slide-up"}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
@@ -267,7 +267,7 @@ const PlanUpgradeModal = ({ onClose }: { onClose: () => void }) =>
       onClick={onClose}
     >
       <div
-        className="w-full bg-white rounded-t-[24px] px-6 pt-6 pb-10 flex flex-col gap-5 animate-slide-up"
+        className="w-full max-w-[430px] bg-white rounded-t-[24px] px-6 pt-6 pb-10 flex flex-col gap-5 animate-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}
@@ -387,18 +387,10 @@ const COLOR_NAME: Record<string, string> = {
   COOL: "쿨슈",
 };
 
-const COLOR_FILTER: Record<string, string> = {
-  AISSUE: "none",
-  JANMANG: "hue-rotate(305deg) saturate(1.1) brightness(1.2)",
-  SUNSET: "hue-rotate(155deg) saturate(0.9) brightness(1.1)",
-  RETRO: "hue-rotate(40deg) saturate(0.85) brightness(1.1)",
-  SWEET: "hue-rotate(225deg) saturate(0.85) brightness(1.2)",
-  COOL: "hue-rotate(345deg) saturate(1.0) brightness(1.1)",
-};
-
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const mascotConfig = useMascotConfig();
   const [showPlanModal, setShowPlanModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -491,22 +483,36 @@ const ProfilePage = () => {
         {/* 마스코트 */}
         <div className="relative w-[110px] h-[110px] z-10 mt-2 mb-10">
           <img
-            src={mascot}
+            src={mascotConfig.faceImage}
             alt="아이슈 마스코트"
             className="relative w-full h-auto object-contain"
-            style={{ filter: COLOR_FILTER[userInfo?.color ?? ""] ?? "none" }}
+            style={{ filter: mascotConfig.filter }}
           />
+          {mascotConfig.clothImage && (
+            <img
+              src={mascotConfig.clothImage}
+              alt=""
+              className="absolute top-0 left-0 w-full h-auto"
+            />
+          )}
+          {mascotConfig.hatImage && (
+            <img
+              src={mascotConfig.hatImage}
+              alt=""
+              className="absolute top-0 left-0 w-full h-auto"
+            />
+          )}
           <img
             src={mascotGlass}
             alt=""
-            className="absolute top-[32%] left-[16%] w-[70%] h-auto animate-glasses"
-            style={{ filter: COLOR_FILTER[userInfo?.color ?? ""] ?? "none" }}
+            className="absolute top-[38%] left-[15%] w-[70%] h-auto animate-glasses"
+            style={{ filter: mascotConfig.filter }}
           />
           <img
             src={mascotHand}
             alt=""
             className="absolute top-[35%] left-[75%] w-[48%] h-auto animate-hand"
-            style={{ filter: COLOR_FILTER[userInfo?.color ?? ""] ?? "none" }}
+            style={{ filter: mascotConfig.filter }}
           />
         </div>
 
@@ -568,15 +574,22 @@ const ProfilePage = () => {
 
       {/* 메뉴 섹션 1 */}
       <div className="border-b-[10px] border-[#F7F7F7] px-5 flex flex-col">
-        <MenuItem icon={<BookIcon />} label="사용 가이드" onClick={() => navigate("/profile/guide")} />
+        <MenuItem
+          icon={<BookIcon />}
+          label="사용 가이드"
+          sublabel="아이슈 사용법을 알아보세요!"
+          onClick={() => navigate("/profile/guide")}
+        />
         <MenuItem
           icon={<HistoryIcon />}
           label="분석 이력"
+          sublabel="내가 분석한 기사를 확인해보세요!"
           onClick={() => navigate("/profile/history")}
         />
         <MenuItem
           icon={<img src={bellBlue} alt="" className="w-5 h-5" />}
           label="키워드 알림 관리"
+          sublabel="관심 키워드 알림을 설정해보세요!"
           onClick={() => navigate("/profile/keywords")}
         />
         <MenuItem
@@ -587,6 +600,7 @@ const ProfilePage = () => {
         <MenuItem
           icon={<StoreIcon />}
           label="캐릭터 상점"
+          sublabel="포인트로 캐릭터를 꾸며보세요!"
           onClick={() => navigate("/profile/shop")}
         />
       </div>

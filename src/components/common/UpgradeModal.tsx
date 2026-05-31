@@ -17,7 +17,7 @@ const UpgradeModal = ({ onClose }: { onClose: () => void }) => {
       onClick={handleClose}
     >
       <div
-        className={`w-full bg-white rounded-t-[24px] px-6 pt-6 pb-10 flex flex-col gap-4 ${exiting ? 'animate-slide-down' : 'animate-slide-up'}`}
+        className={`w-full max-w-[430px] bg-white rounded-t-[24px] px-6 pt-6 pb-10 flex flex-col gap-4 ${exiting ? 'animate-slide-down' : 'animate-slide-up'}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
