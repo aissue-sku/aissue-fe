@@ -15,6 +15,12 @@ export const notificationService = {
   markAsRead: (id: number): Promise<void> =>
     http.patch(`/api/notifications/${id}/read`),
 
+  markAllAsRead: (): Promise<void> =>
+    http.patch('/api/notifications/read-all'),
+
+  deleteRead: (): Promise<void> =>
+    http.delete('/api/notifications/read'),
+
   dismiss: (id: number): Promise<void> =>
     http.delete(`/api/notifications/${id}`),
 };

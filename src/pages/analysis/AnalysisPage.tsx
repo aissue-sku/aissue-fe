@@ -5,7 +5,17 @@ import { analysisService } from "../../services/analysis";
 import { ApiError } from "../../services/client";
 import { useMascotConfig } from "../../hooks/useMascotConfig";
 
-const LOADING_DURATION = 3000;
+const FAST_DURATION = 3000;
+const SLOW_CAP = 78;
+const SLOW_REACH_MS = 7000;
+
+const STEPS = [
+  "기사 내용 수집 중...",
+  "출처 신뢰도 확인 중...",
+  "내용 정확성 분석 중...",
+  "교차검증 중...",
+  "신뢰도 점수 계산 중...",
+];
 
 const AnalysisPage = () => {
   const navigate = useNavigate();
@@ -21,81 +31,116 @@ const AnalysisPage = () => {
   const [url, setUrl] = useState(prefillUrl);
   const [loading, setLoading] = useState(autoStart);
   const [progress, setProgress] = useState(0);
+  const [stepIndex, setStepIndex] = useState(0);
+  const [jumping, setJumping] = useState(false);
   const [urlError, setUrlError] = useState<string | null>(null);
   const rafRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
+  const mascotConfig = useMascotConfig();
+
+  const hasContentId = !!locationState?.contentId;
 
   useEffect(() => {
     if (!loading) return;
 
-    const animate = (timestamp: number) => {
-      if (!startRef.current) startRef.current = timestamp;
-      const elapsed = timestamp - startRef.current;
-      const next = Math.min((elapsed / LOADING_DURATION) * 100, 100);
-      setProgress(next);
-      if (elapsed < LOADING_DURATION) {
-        rafRef.current = requestAnimationFrame(animate);
-      }
-    };
-
-    rafRef.current = requestAnimationFrame(animate);
-
-    // contentId 있으면 홈 카드 flow, URL만 있으면 제출 API flow
-    const hasContentId = !!locationState?.contentId;
-    const submitPromise =
-      !hasContentId && url.trim()
-        ? analysisService.submitContent("URL", url.trim())
-        : Promise.resolve(null);
-
+    startRef.current = null;
     let cancelled = false;
 
-    const timer = setTimeout(async () => {
-      try {
-        const submitResult = await submitPromise;
-        if (cancelled) return;
+    if (hasContentId) {
+      const animate = (ts: number) => {
+        if (!startRef.current) startRef.current = ts;
+        const elapsed = ts - startRef.current;
+        setProgress(Math.min((elapsed / FAST_DURATION) * 100, 100));
+        if (elapsed < FAST_DURATION) rafRef.current = requestAnimationFrame(animate);
+      };
+      rafRef.current = requestAnimationFrame(animate);
 
-        if (submitResult) {
-          navigate("/analysis/result", {
-            state: { submitResult, title: locationState?.title },
-          });
-        } else {
-          navigate("/analysis/result", {
-            state: {
-              url,
-              contentId: locationState?.contentId,
-              title: locationState?.title,
-            },
-          });
-        }
-      } catch (e) {
+      const timer = setTimeout(() => {
+        if (!cancelled) navigate("/analysis/result", {
+          state: {
+            url,
+            contentId: locationState?.contentId,
+            title: locationState?.title,
+          },
+        });
+      }, FAST_DURATION);
+
+      return () => {
+        cancelled = true;
+        clearTimeout(timer);
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        startRef.current = null;
+      };
+    }
+
+    // URL 제출 flow: 서서히 78%까지 채우다가 API 완료 시 100% 점프
+    if (!url.trim()) return;
+
+    let apiDone = false;
+
+    const animate = (ts: number) => {
+      if (!startRef.current) startRef.current = ts;
+      const elapsed = ts - startRef.current;
+      const t = Math.min(elapsed / SLOW_REACH_MS, 1);
+      const eased = (1 - Math.pow(1 - t, 2)) * SLOW_CAP;
+      setProgress(eased);
+      if (!apiDone) rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+
+    let msgIdx = 0;
+    const msgTimer = setInterval(() => {
+      msgIdx = (msgIdx + 1) % STEPS.length;
+      setStepIndex(msgIdx);
+    }, 1800);
+
+    analysisService
+      .submitContent("URL", url.trim())
+      .then((result) => {
         if (cancelled) return;
+        apiDone = true;
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        clearInterval(msgTimer);
+        setJumping(true);
+        setProgress(100);
+        setTimeout(() => {
+          if (!cancelled) navigate("/analysis/result", {
+            state: { submitResult: result, title: locationState?.title },
+          });
+        }, 500);
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        apiDone = true;
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        clearInterval(msgTimer);
         setUrlError(
-          e instanceof ApiError
-            ? e.message
-            : "올바른 기사 URL을 입력해 주세요.",
+          e instanceof ApiError ? e.message : "올바른 기사 URL을 입력해 주세요.",
         );
         setLoading(false);
-      }
-    }, LOADING_DURATION);
+      });
 
     return () => {
       cancelled = true;
+      apiDone = true;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      clearTimeout(timer);
+      clearInterval(msgTimer);
       startRef.current = null;
     };
-  }, [loading, navigate, url, locationState]);
-
-  const mascotConfig = useMascotConfig();
+  }, [loading, navigate, url, locationState, hasContentId]);
 
   const handleAnalyze = () => {
     if (!url.trim()) return;
     setUrlError(null);
     setProgress(0);
+    setStepIndex(0);
+    setJumping(false);
     setLoading(true);
   };
 
   if (loading) {
+    const title = hasContentId ? "신뢰도 확인 중..." : STEPS[stepIndex];
+
     return (
       <div className="h-full bg-[#F5F5F5] flex flex-col items-center justify-center px-5 gap-8">
         <div className="relative w-36">
@@ -113,13 +158,16 @@ const AnalysisPage = () => {
           )}
         </div>
         <div className="w-full flex flex-col items-center gap-4">
-          <p className="text-[18px] font-bold text-[#51A2FF]">
-            신뢰도 확인 중...
+          <p key={title} className="text-[18px] font-bold text-[#51A2FF] animate-fade-in">
+            {title}
           </p>
           <div className="w-full h-[10px] bg-[#E0E0E0] rounded-full overflow-hidden">
             <div
               className="h-full bg-[#51A2FF] rounded-full"
-              style={{ width: `${progress}%` }}
+              style={{
+                width: `${progress}%`,
+                transition: jumping ? "width 0.5s ease" : "none",
+              }}
             />
           </div>
           <p className="text-sm text-gray-400 text-center">

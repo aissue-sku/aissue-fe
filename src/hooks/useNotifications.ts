@@ -25,10 +25,20 @@ export const useNotifications = () => {
     );
   };
 
+  const markAllAsRead = () => {
+    notificationService.markAllAsRead().catch(() => {});
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  };
+
+  const deleteRead = () => {
+    notificationService.deleteRead().catch(() => {});
+    setNotifications((prev) => prev.filter((n) => !n.read));
+  };
+
   const dismiss = (id: number) => {
     notificationService.dismiss(id).catch(() => {});
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
-  return { notifications, unreadCount, loading, error, markAsRead, dismiss };
+  return { notifications, unreadCount, loading, error, markAsRead, markAllAsRead, deleteRead, dismiss };
 };

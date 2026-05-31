@@ -21,7 +21,7 @@ const formatTimeAgo = (dateStr: string): string => {
 const NotificationPage = () => {
   const navigate = useNavigate();
   const [isExiting, setIsExiting] = useState(false);
-  const { notifications, unreadCount, loading, error, markAsRead, dismiss } =
+  const { notifications, unreadCount, loading, error, markAsRead, markAllAsRead, deleteRead, dismiss } =
     useNotifications();
 
   const [swipeOffsets, setSwipeOffsets] = useState<Record<number, number>>({});
@@ -66,22 +66,44 @@ const NotificationPage = () => {
       }`}
     >
       {/* 헤더 */}
-      <header className="bg-white border-b border-[#f0f0f0] h-18 flex items-center justify-center px-5 shrink-0 relative">
-        <button
-          onClick={handleBack}
-          className="absolute left-5 p-1 cursor-pointer active:opacity-60 transition-opacity"
-          aria-label="뒤로 가기"
-        >
-          <ChevronLeft size={24} className="text-[#1a1a1a]" />
-        </button>
-        <h1 className="text-[18px] font-semibold text-[#1a1a1a] tracking-[-0.45px]">
-          알림
-          {unreadCount > 0 && (
-            <span className="ml-2 text-[14px] font-bold text-[#51a2ff]">
-              {unreadCount}
-            </span>
-          )}
-        </h1>
+      <header className="bg-white border-b border-[#f0f0f0] flex flex-col shrink-0">
+        <div className="h-18 flex items-center justify-center px-5 relative">
+          <button
+            onClick={handleBack}
+            className="absolute left-5 p-1 cursor-pointer active:opacity-60 transition-opacity"
+            aria-label="뒤로 가기"
+          >
+            <ChevronLeft size={24} className="text-[#1a1a1a]" />
+          </button>
+          <h1 className="text-[18px] font-semibold text-[#1a1a1a] tracking-[-0.45px]">
+            알림
+            {unreadCount > 0 && (
+              <span className="ml-2 text-[14px] font-bold text-[#51a2ff]">
+                {unreadCount}
+              </span>
+            )}
+          </h1>
+        </div>
+        {!loading && notifications.length > 0 && (
+          <div className="flex items-center justify-end gap-3 px-5 pb-3">
+            {unreadCount > 0 && (
+              <button
+                onClick={markAllAsRead}
+                className="text-[13px] font-medium text-[#51a2ff] active:opacity-60 transition-opacity"
+              >
+                전체 읽음
+              </button>
+            )}
+            {notifications.some((n) => n.read) && (
+              <button
+                onClick={deleteRead}
+                className="text-[13px] font-medium text-[#a8a8a8] active:opacity-60 transition-opacity"
+              >
+                읽은 알림 삭제
+              </button>
+            )}
+          </div>
+        )}
       </header>
 
       {/* 콘텐츠 */}
