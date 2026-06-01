@@ -27,6 +27,8 @@ const NotificationPage = () => {
   const [swipeOffsets, setSwipeOffsets] = useState<Record<number, number>>({});
   const [activeSwiping, setActiveSwiping] = useState<number | null>(null);
   const touchStartX = useRef<Record<number, number>>({});
+  // state 업데이트가 비동기라 click 시점에 리셋 전 값을 볼 수 있으므로 ref로 동기 추적
+  const didSwipeRef = useRef<Record<number, boolean>>({});
 
   const handleBack = () => {
     setIsExiting(true);
@@ -34,19 +36,21 @@ const NotificationPage = () => {
   };
 
   const handleCardClick = (id: number, contentId: number, title: string) => {
-    if ((swipeOffsets[id] ?? 0) < -10) return;
+    if (didSwipeRef.current[id]) return;
     markAsRead(id);
     navigate('/analysis/trust', { state: { contentId: String(contentId), title } });
   };
 
   const handleTouchStart = (id: number, e: React.TouchEvent) => {
     touchStartX.current[id] = e.touches[0].clientX;
+    didSwipeRef.current[id] = false;
     setActiveSwiping(id);
   };
 
   const handleTouchMove = (id: number, e: React.TouchEvent) => {
     const dx = e.touches[0].clientX - (touchStartX.current[id] ?? 0);
     if (dx < 0) {
+      if (dx < -10) didSwipeRef.current[id] = true;
       setSwipeOffsets((prev) => ({ ...prev, [id]: Math.max(dx, -SWIPE_MAX) }));
     }
   };
@@ -78,7 +82,7 @@ const NotificationPage = () => {
           <h1 className="text-[18px] font-semibold text-[#1a1a1a] tracking-[-0.45px]">
             알림
             {unreadCount > 0 && (
-              <span className="ml-2 text-[14px] font-bold text-[#51a2ff]">
+              <span className="ml-2 text-[14px] font-bold text-[var(--color-primary)]">
                 {unreadCount}
               </span>
             )}
@@ -89,7 +93,7 @@ const NotificationPage = () => {
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
-                className="text-[13px] font-medium text-[#51a2ff] active:opacity-60 transition-opacity"
+                className="text-[13px] font-medium text-[var(--color-primary)] active:opacity-60 transition-opacity"
               >
                 전체 읽음
               </button>
@@ -169,7 +173,7 @@ const NotificationPage = () => {
                   >
                     {/* 읽지 않음 좌측 강조선 */}
                     {!item.read && (
-                      <span className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#51a2ff] rounded-r-full" />
+                      <span className="absolute left-0 top-0 bottom-0 w-[3px] bg-[var(--color-primary)] rounded-r-full" />
                     )}
 
                     <button
@@ -179,19 +183,19 @@ const NotificationPage = () => {
                       {/* 아이콘 */}
                       <div
                         className={`mt-0.5 w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          item.read ? 'bg-[#f0f0f0]' : 'bg-[#e8f3ff]'
+                          item.read ? 'bg-[#f0f0f0]' : 'bg-[var(--color-primary-bg)]'
                         }`}
                       >
                         <Bell
                           size={17}
-                          className={item.read ? 'text-[#b0b0b0]' : 'text-[#51a2ff]'}
+                          className={item.read ? 'text-[#b0b0b0]' : 'text-[var(--color-primary)]'}
                         />
                       </div>
 
                       {/* 텍스트 */}
                       <div className="flex-1 min-w-0 flex flex-col gap-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-[11px] font-semibold text-[#51a2ff] bg-[#e8f3ff] rounded-full px-2 py-0.5 leading-none">
+                          <span className="text-[11px] font-semibold text-[var(--color-primary)] bg-[var(--color-primary-bg)] rounded-full px-2 py-0.5 leading-none">
                             {item.keyword}
                           </span>
                           <span className="text-[12px] text-[#aaa] ml-auto flex-shrink-0">

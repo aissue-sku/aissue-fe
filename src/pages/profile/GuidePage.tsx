@@ -47,14 +47,14 @@ function StepCard1() {
                 : "animate-guide-card-side"
             }`}
           >
-            <div className="h-[45%] bg-[#C8E4FF]" />
+            <div className="h-[45%] bg-[var(--color-primary-border)]" />
             <div className="p-2 flex flex-col gap-1.5">
               <div className="h-2 bg-[#D0E8FF] rounded-full w-1/3" />
               <div className="h-2 bg-gray-200 rounded-full w-full" />
               <div className="h-2 bg-gray-200 rounded-full w-4/5" />
               <div className="flex gap-1 mt-0.5">
-                <div className="h-4 w-10 bg-[#EEF8FF] rounded" />
-                <div className="h-4 w-8 bg-[#EEF8FF] rounded" />
+                <div className="h-4 w-10 bg-[var(--color-primary-bg)] rounded" />
+                <div className="h-4 w-8 bg-[var(--color-primary-bg)] rounded" />
               </div>
             </div>
           </div>
@@ -69,7 +69,7 @@ function StepCard2() {
     <div className="relative w-full flex flex-col items-center justify-center h-full gap-4">
       {/* 카드 */}
       <div className="w-[200px] h-[200px] bg-white rounded-2xl shadow-lg flex flex-col overflow-hidden border border-[#E5E5E5]">
-        <div className="h-[90px] bg-[#C8E4FF]" />
+        <div className="h-[90px] bg-[var(--color-primary-border)]" />
         <div className="p-3 flex flex-col gap-2">
           <div className="h-2.5 bg-[#D0E8FF] rounded-full w-1/3" />
           <div className="h-3 bg-gray-200 rounded-full w-full" />
@@ -78,15 +78,15 @@ function StepCard2() {
       </div>
       {/* 탭 리플 */}
       <div className="absolute top-[90px] left-1/2 -translate-x-1/2">
-        <div className="w-10 h-10 rounded-full bg-[#51A2FF] opacity-0 animate-tap-ripple" />
+        <div className="w-10 h-10 rounded-full bg-[var(--color-primary)] opacity-0 animate-tap-ripple" />
       </div>
       {/* 로딩 바 */}
       <div className="w-[200px] flex flex-col items-center gap-2">
-        <p className="text-[13px] font-semibold text-[#51A2FF]">
+        <p className="text-[13px] font-semibold text-[var(--color-primary)]">
           신뢰도 확인 중...
         </p>
         <div className="w-full h-2 bg-[#E0E0E0] rounded-full overflow-hidden">
-          <div className="h-full bg-[#51A2FF] rounded-full animate-progress-bar" />
+          <div className="h-full bg-[var(--color-primary)] rounded-full animate-progress-bar" />
         </div>
       </div>
     </div>
@@ -97,17 +97,17 @@ function StepCard3() {
   return (
     <div className="relative w-full flex flex-col items-center justify-center h-full gap-5">
       {/* URL 입력창 */}
-      <div className="w-[240px] h-[52px] border-2 border-[#3B91F4] rounded-xl px-4 flex items-center gap-2 bg-white">
+      <div className="w-[240px] h-[52px] border-2 border-[var(--color-primary)] rounded-xl px-4 flex items-center gap-2 bg-white">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
           <path
             d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
-            stroke="#51A2FF"
+            style={{ stroke: 'var(--color-primary)' }}
             strokeWidth="2"
             strokeLinecap="round"
           />
           <path
             d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
-            stroke="#51A2FF"
+            style={{ stroke: 'var(--color-primary)' }}
             strokeWidth="2"
             strokeLinecap="round"
           />
@@ -117,15 +117,15 @@ function StepCard3() {
         </p>
       </div>
       {/* 버튼 */}
-      <div className="w-[240px] h-[46px] bg-[#51A2FF] rounded-[8px] flex items-center justify-center animate-btn-pulse">
+      <div className="w-[240px] h-[46px] bg-[var(--color-primary)] rounded-[8px] flex items-center justify-center animate-btn-pulse">
         <span className="text-white text-[15px] font-semibold">
           신뢰도 분석하기
         </span>
       </div>
       {/* 결과 미리보기 */}
       <div className="w-[240px] bg-white rounded-2xl border border-[#E5E5E5] p-3 flex items-center gap-3 animate-result-enter">
-        <div className="w-12 h-12 rounded-full bg-[#EEF8FF] flex items-center justify-center flex-shrink-0">
-          <span className="text-[18px] font-bold text-[#3B91F4]">85</span>
+        <div className="w-12 h-12 rounded-full bg-[var(--color-primary-bg)] flex items-center justify-center flex-shrink-0">
+          <span className="text-[18px] font-bold text-[var(--color-primary)]">85</span>
         </div>
         <div className="flex flex-col gap-1">
           <div className="h-2.5 bg-[#D0E8FF] rounded-full w-20" />
@@ -146,7 +146,7 @@ function StepCard4() {
           <div
             key={kw}
             className={`px-3 py-1.5 rounded-full text-[13px] font-semibold border flex items-center gap-1
-              ${kw === "+ 추가" ? "border-dashed border-[#C0C0C0] text-[#A8A8A8]" : "bg-[#51A2FF] text-white border-transparent"}
+              ${kw === "+ 추가" ? "border-dashed border-[#C0C0C0] text-[#A8A8A8]" : "bg-[var(--color-primary)] text-white border-transparent"}
             `}
             style={{
               animation: `card-enter 400ms cubic-bezier(0.34,1.56,0.64,1) ${i * 100}ms both`,
@@ -181,7 +181,7 @@ function StepCard4() {
               animation: `card-enter 350ms ease ${300 + i * 80}ms both`,
             }}
           >
-            <div className="w-7 h-7 rounded-md bg-[#EEF8FF] flex-shrink-0" />
+            <div className="w-7 h-7 rounded-md bg-[var(--color-primary-bg)] flex-shrink-0" />
             <p className="text-[12px] text-[#1A1A1A] font-medium line-clamp-1">
               {title}
             </p>
@@ -257,7 +257,7 @@ const GuidePage = () => {
             key={i}
             onClick={() => goTo(i)}
             className={`rounded-full transition-all duration-300 ${
-              i === step ? "w-6 h-2 bg-[#51A2FF]" : "w-2 h-2 bg-[#D0E8FF]"
+              i === step ? "w-6 h-2 bg-[var(--color-primary)]" : "w-2 h-2 bg-[#D0E8FF]"
             }`}
           />
         ))}
@@ -297,12 +297,12 @@ const GuidePage = () => {
             onClick={() => {
               if (isLast) {
                 setExiting(true);
-                setTimeout(() => navigate(-1), 280);
+                setTimeout(() => navigate("/analysis"), 280);
               } else {
                 goTo(step + 1);
               }
             }}
-            className="flex-1 h-[50px] bg-[#51A2FF] rounded-[10px] text-[16px] font-semibold text-white active:opacity-90 transition-opacity"
+            className="flex-1 h-[50px] bg-[var(--color-primary)] rounded-[10px] text-[16px] font-semibold text-white active:opacity-90 transition-opacity"
           >
             {isLast ? "시작하기" : "다음"}
           </button>

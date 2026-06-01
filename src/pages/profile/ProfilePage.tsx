@@ -26,14 +26,14 @@ const HistoryIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
     <path
       d="M12 8v4l3 3"
-      stroke="#51A2FF"
+      style={{ stroke: 'var(--color-primary)' }}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M3.05 11a9 9 0 1 1 .5 4M3 16v-5h5"
-      stroke="#51A2FF"
+      style={{ stroke: 'var(--color-primary)' }}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -45,13 +45,13 @@ const BookIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
     <path
       d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"
-      stroke="#51A2FF"
+      style={{ stroke: 'var(--color-primary)' }}
       strokeWidth="2"
       strokeLinecap="round"
     />
     <path
       d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
-      stroke="#51A2FF"
+      style={{ stroke: 'var(--color-primary)' }}
       strokeWidth="2"
     />
   </svg>
@@ -59,15 +59,15 @@ const BookIcon = () => (
 
 const CoinIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-    <circle cx="12" cy="12" r="9" stroke="#51A2FF" strokeWidth="2" />
+    <circle cx="12" cy="12" r="9" style={{ stroke: 'var(--color-primary)' }} strokeWidth="2" />
     <path
       d="M12 8v4l2.5 2.5"
-      stroke="#51A2FF"
+      style={{ stroke: 'var(--color-primary)' }}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <circle cx="12" cy="12" r="3" stroke="#51A2FF" strokeWidth="2" />
+    <circle cx="12" cy="12" r="3" style={{ stroke: 'var(--color-primary)' }} strokeWidth="2" />
   </svg>
 );
 
@@ -75,14 +75,14 @@ const StoreIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
     <path
       d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
-      stroke="#51A2FF"
+      style={{ stroke: 'var(--color-primary)' }}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M9 22V12h6v10"
-      stroke="#51A2FF"
+      style={{ stroke: 'var(--color-primary)' }}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -132,20 +132,20 @@ const CrownIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
     <path
       d="M2 20h20M2 20L4.5 9 9 14l3-8 3 8 4.5-5L22 20H2z"
-      stroke="#51A2FF"
+      style={{ stroke: 'var(--color-primary)' }}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <circle cx="12" cy="6" r="1.2" fill="#51A2FF" />
-    <circle cx="4" cy="9" r="1.2" fill="#51A2FF" />
-    <circle cx="20" cy="9" r="1.2" fill="#51A2FF" />
+    <circle cx="12" cy="6" r="1.2" style={{ fill: 'var(--color-primary)' }} />
+    <circle cx="4" cy="9" r="1.2" style={{ fill: 'var(--color-primary)' }} />
+    <circle cx="20" cy="9" r="1.2" style={{ fill: 'var(--color-primary)' }} />
   </svg>
 );
 
 const PointBadge = () => (
-  <div className="w-9 h-9 rounded-full bg-[#EEF8FF] flex items-center justify-center">
-    <span className="text-[15px] font-bold text-[#3B91F4]">P</span>
+  <div className="w-9 h-9 rounded-full bg-[var(--color-primary-bg)] flex items-center justify-center">
+    <span className="text-[15px] font-bold text-[var(--color-primary)]">P</span>
   </div>
 );
 
@@ -162,7 +162,7 @@ const MenuItem = ({
   icon,
   label,
   sublabel,
-  labelColor = "#51A2FF",
+  labelColor = "var(--color-primary)",
   onClick,
 }: MenuItemProps) => (
   <button
@@ -315,11 +315,11 @@ const PlanUpgradeModal = ({ onClose }: { onClose: () => void }) =>
           </div>
 
           {/* 프로 플랜 */}
-          <div className="flex-1 border-2 border-[#51A2FF] rounded-2xl p-4 flex flex-col gap-2 relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-[#51A2FF] px-2.5 py-1 rounded-bl-xl">
+          <div className="flex-1 border-2 border-[var(--color-primary)] rounded-2xl p-4 flex flex-col gap-2 relative overflow-hidden">
+            <div className="absolute top-0 right-0 bg-[var(--color-primary)] px-2.5 py-1 rounded-bl-xl">
               <span className="text-[11px] font-bold text-white">추천</span>
             </div>
-            <span className="text-[13px] font-semibold text-[#51A2FF]">
+            <span className="text-[13px] font-semibold text-[var(--color-primary)]">
               업그레이드
             </span>
             <span className="text-[18px] font-bold text-[#1A1A1A]">프로</span>
@@ -331,7 +331,7 @@ const PlanUpgradeModal = ({ onClose }: { onClose: () => void }) =>
               ].map((item) => (
                 <li
                   key={item}
-                  className="flex items-center gap-1.5 text-[13px] text-[#3B91F4]"
+                  className="flex items-center gap-1.5 text-[13px] text-[var(--color-primary)]"
                 >
                   <svg
                     width="12"
@@ -342,7 +342,7 @@ const PlanUpgradeModal = ({ onClose }: { onClose: () => void }) =>
                   >
                     <path
                       d="M2 6l3 3 5-5"
-                      stroke="#51A2FF"
+                      style={{ stroke: 'var(--color-primary)' }}
                       strokeWidth="1.8"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -356,18 +356,18 @@ const PlanUpgradeModal = ({ onClose }: { onClose: () => void }) =>
         </div>
 
         {/* 가격 */}
-        <div className="bg-[#F7F9FF] rounded-2xl px-5 py-4 flex items-center justify-between">
+        <div className="bg-[var(--color-primary-bg)] rounded-2xl px-5 py-4 flex items-center justify-between">
           <span className="text-[15px] text-[#1A1A1A] font-medium">
             프로 플랜
           </span>
           <div className="flex items-baseline gap-1">
-            <span className="text-[22px] font-bold text-[#3B91F4]">₩4,900</span>
+            <span className="text-[22px] font-bold text-[var(--color-primary)]">₩4,900</span>
             <span className="text-[13px] text-[#A8A8A8]">/ 월</span>
           </div>
         </div>
 
         {/* 업그레이드 버튼 */}
-        <button className="w-full h-[52px] bg-[#51A2FF] text-white text-[17px] font-semibold rounded-[10px] active:opacity-90 transition-opacity">
+        <button className="w-full h-[52px] bg-[var(--color-primary)] text-white text-[17px] font-semibold rounded-[10px] active:opacity-90 transition-opacity">
           프로로 업그레이드하기
         </button>
       </div>
@@ -437,7 +437,7 @@ const ProfilePage = () => {
         <p className="text-[24px] font-bold tracking-[-0.45px]">
           {userInfo ? (
             <>
-              <span className="text-[#3B91F4]">{userInfo.name}</span>
+              <span className="text-[var(--color-primary)]">{userInfo.name}</span>
               <span className="text-[#1A1A1A]"> 님, 환영합니다!</span>
             </>
           ) : (
@@ -453,31 +453,37 @@ const ProfilePage = () => {
           src={star}
           alt=""
           className="absolute top-[-50px] left-[17px] w-[34px] animate-star"
+          style={{ filter: 'var(--color-primary-filter)' }}
         />
         <img
           src={star}
           alt=""
           className="absolute top-[10px] left-[91px] w-[22px] animate-star-delay-1"
+          style={{ filter: 'var(--color-primary-filter)' }}
         />
         <img
           src={star}
           alt=""
           className="absolute top-[45px] left-[25px] w-[18px] animate-star-delay-2"
+          style={{ filter: 'var(--color-primary-filter)' }}
         />
         <img
           src={star}
           alt=""
           className="absolute top-[10px] right-[60px] w-[36px] animate-star-delay-3"
+          style={{ filter: 'var(--color-primary-filter)' }}
         />
         <img
           src={star}
           alt=""
           className="absolute top-[-50px] right-[55px] w-[18px] animate-star-delay-4"
+          style={{ filter: 'var(--color-primary-filter)' }}
         />
         <img
           src={star}
           alt=""
           className="absolute top-[124px] right-[90px] w-[22px] animate-star-delay-1"
+          style={{ filter: 'var(--color-primary-filter)' }}
         />
 
         {/* 마스코트 */}
@@ -518,7 +524,7 @@ const ProfilePage = () => {
 
         {/* 파란 반원 배경 */}
         <div
-          className="absolute bottom-0 left-0 right-0 h-[140px] bg-[#E7F2FF]"
+          className="absolute bottom-0 left-0 right-0 h-[140px] bg-[var(--color-primary-border)]"
           style={{ borderRadius: "120px 120px 0 0" }}
         />
 
@@ -526,13 +532,13 @@ const ProfilePage = () => {
         <div className="relative z-10 flex items-center justify-center gap-8 mt-1 mb-2">
           <div className="flex items-center gap-2">
             <span className="text-[14px] text-[#8F8F8F]">캐릭터</span>
-            <span className="text-[18px] font-bold text-[#3B91F4]">
+            <span className="text-[18px] font-bold text-[var(--color-primary)]">
               {userInfo ? (COLOR_NAME[userInfo.color] ?? userInfo.color) : "—"}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[14px] text-[#8F8F8F]">포인트</span>
-            <span className="text-[20px] font-bold text-[#3B91F4]">
+            <span className="text-[20px] font-bold text-[var(--color-primary)]">
               {userInfo?.points ?? "—"}
             </span>
             <PointBadge />
@@ -544,12 +550,12 @@ const ProfilePage = () => {
       <div className="border-t-[10px] border-b-[10px] border-[#F7F7F7] px-[30px] py-[30px]">
         <div className="flex flex-col gap-4">
           <div className="flex gap-3 items-start">
-            <div className="w-10 h-10 rounded-[10px] bg-[#EEF8FF] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-[10px] bg-[var(--color-primary-bg)] flex items-center justify-center shrink-0">
               <CrownIcon />
             </div>
             <div className="flex flex-col gap-1">
               <p className="text-[18px] font-bold leading-[1.5]">
-                <span className="text-[#3B91F4]">프로 플랜 </span>
+                <span className="text-[var(--color-primary)]">프로 플랜 </span>
                 <span className="text-[#1A1A1A]">전용 혜택</span>
               </p>
               <p className="text-[14px] text-[#A8A8A8] leading-[1.5]">
@@ -563,9 +569,9 @@ const ProfilePage = () => {
           </div>
           <button
             onClick={() => setShowPlanModal(true)}
-            className="w-full border border-[#51A2FF] rounded-[5px] py-2 flex items-center justify-center cursor-pointer active:bg-[#EEF8FF] transition-colors"
+            className="w-full border border-[var(--color-primary)] rounded-[5px] py-2 flex items-center justify-center cursor-pointer active:bg-[var(--color-primary-bg)] transition-colors"
           >
-            <span className="text-[14px] font-semibold text-[#3B91F4]">
+            <span className="text-[14px] font-semibold text-[var(--color-primary)]">
               플랜 업그레이드하기
             </span>
           </button>
@@ -587,7 +593,7 @@ const ProfilePage = () => {
           onClick={() => navigate("/profile/history")}
         />
         <MenuItem
-          icon={<img src={bellBlue} alt="" className="w-5 h-5" />}
+          icon={<img src={bellBlue} alt="" className="w-5 h-5" style={{ filter: 'var(--color-primary-filter)' }} />}
           label="키워드 알림 관리"
           sublabel="관심 키워드 알림을 설정해보세요!"
           onClick={() => navigate("/profile/keywords")}

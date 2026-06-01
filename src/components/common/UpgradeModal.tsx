@@ -28,7 +28,7 @@ const UpgradeModal = ({ onClose }: { onClose: () => void }) => {
             </svg>
           </button>
         </div>
-        <div className="bg-[#F7F9FF] rounded-2xl px-5 py-4 flex flex-col gap-1.5">
+        <div className="bg-[var(--color-primary-bg)] rounded-2xl px-5 py-4 flex flex-col gap-1.5">
           <p className="text-[15px] font-semibold text-[#1A1A1A]">
             무료 플랜은 키워드 {FREE_KEYWORD_LIMIT}개까지 등록 가능해요
           </p>
@@ -40,14 +40,14 @@ const UpgradeModal = ({ onClose }: { onClose: () => void }) => {
           {['키워드 알림 무제한', '기사 분석 무제한', '모든 캐릭터 해금'].map((item) => (
             <div key={item} className="flex items-center gap-2">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <circle cx="8" cy="8" r="7" stroke="#51A2FF" strokeWidth="1.4" />
-                <path d="M5 8l2 2 4-4" stroke="#51A2FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="8" cy="8" r="7" style={{ stroke: 'var(--color-primary)' }} strokeWidth="1.4" />
+                <path d="M5 8l2 2 4-4" style={{ stroke: 'var(--color-primary)' }} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span className="text-[13px] text-[#555]">{item}</span>
             </div>
           ))}
         </div>
-        <button className="w-full bg-[#51A2FF] rounded-[12px] py-3.5 text-white text-[16px] font-bold active:opacity-90 transition-opacity mt-1">
+        <button className="w-full bg-[var(--color-primary)] rounded-[12px] py-3.5 text-white text-[16px] font-bold active:opacity-90 transition-opacity mt-1">
           프로 플랜 업그레이드하기
         </button>
       </div>

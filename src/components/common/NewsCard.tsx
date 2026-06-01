@@ -22,7 +22,7 @@ const NewsCard = ({ article, active = false, onClick }: Props) => {
           <div
             className={`absolute top-2.5 right-2.5 flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold backdrop-blur-sm ${
               article.trusted
-                ? "bg-[#51A2FF]/85 text-white"
+                ? "bg-[var(--color-primary)]/85 text-white"
                 : "bg-[#FF8C42]/85 text-white"
             }`}
           >
@@ -43,7 +43,7 @@ const NewsCard = ({ article, active = false, onClick }: Props) => {
       {/* 본문 */}
       <div className="flex flex-col flex-1 p-4 overflow-hidden">
         <div className="flex items-center gap-2 mb-1">
-          <p className="text-xs font-semibold text-[#5b9cf6]">{article.timeAgo}</p>
+          <p className="text-xs font-semibold text-[var(--color-primary)]">{article.timeAgo}</p>
           {article.category && (
             <span className="text-xs font-semibold text-[#8f8f8f] bg-[#f5f5f5] rounded-[5px] px-2 py-0.5">
               {article.category}
@@ -68,7 +68,7 @@ const NewsCard = ({ article, active = false, onClick }: Props) => {
           {article.tags.map((tag) => (
             <span
               key={tag}
-              className="text-xs text-[#3B91F4] bg-[#EEF8FF] border-[0.96px] border-[#3B91F4] rounded-[5px] px-3 py-1"
+              className="text-xs text-[var(--color-primary)] bg-[var(--color-primary-bg)] border-[0.96px] border-[var(--color-primary)] rounded-[5px] px-3 py-1"
             >
               {tag}
             </span>

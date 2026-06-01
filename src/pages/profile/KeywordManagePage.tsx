@@ -6,7 +6,7 @@ import UpgradeModal from '../../components/common/UpgradeModal';
 
 const FREE_KEYWORD_LIMIT = 3;
 
-const BellIcon = ({ color = '#51A2FF' }: { color?: string }) => (
+const BellIcon = ({ color = 'var(--color-primary)' }: { color?: string }) => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
     <path
       d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
@@ -147,8 +147,8 @@ const KeywordManagePage = () => {
                     disabled={already}
                     className={`px-4 py-2 rounded-full text-[14px] font-semibold transition-colors ${
                       already
-                        ? 'bg-[#cce4ff] text-[#51A2FF] opacity-50 cursor-default'
-                        : 'bg-[#EEF8FF] text-[#51A2FF] active:bg-[#d6edff]'
+                        ? 'bg-[var(--color-primary-bg)] text-[var(--color-primary)] opacity-50 cursor-default'
+                        : 'bg-[var(--color-primary-bg)] text-[var(--color-primary)] active:bg-[#d6edff]'
                     }`}
                   >
                     {already ? word : `+ ${word}`}
@@ -164,7 +164,7 @@ const KeywordManagePage = () => {
           {/* 섹션 헤더 */}
           <div className="flex items-center justify-between px-1">
             <span className="text-[15px] font-semibold text-[#1A1A1A]">구독 중인 키워드</span>
-            <span className="text-[13px] font-semibold text-[#51A2FF]">
+            <span className="text-[13px] font-semibold text-[var(--color-primary)]">
               {loading ? '' : `${subscribed.length}개`}
             </span>
           </div>
@@ -178,7 +178,7 @@ const KeywordManagePage = () => {
               프로 플랜으로 키워드 더 추가하기
             </button>
           ) : showInput ? (
-            <div className="bg-[#EEF8FF] rounded-2xl px-4 py-3 flex flex-col gap-2">
+            <div className="bg-[var(--color-primary-bg)] rounded-2xl px-4 py-3 flex flex-col gap-2">
               <div className="flex gap-2">
                 <input
                   ref={inputRef}
@@ -186,11 +186,11 @@ const KeywordManagePage = () => {
                   onChange={(e) => { setInputValue(e.target.value); setInputError(''); }}
                   onKeyDown={(e) => e.key === 'Enter' && handleInputSubmit()}
                   placeholder="키워드를 입력하세요"
-                  className="flex-1 bg-white border border-[#c8dff8] rounded-xl px-3 py-2 text-[14px] text-[#1a1a1a] outline-none"
+                  className="flex-1 bg-white border border-[var(--color-primary-border)] rounded-xl px-3 py-2 text-[14px] text-[#1a1a1a] outline-none"
                 />
                 <button
                   onClick={handleInputSubmit}
-                  className="bg-[#51A2FF] text-white text-[14px] font-semibold px-4 rounded-xl active:opacity-80 transition-opacity"
+                  className="bg-[var(--color-primary)] text-white text-[14px] font-semibold px-4 rounded-xl active:opacity-80 transition-opacity"
                 >
                   추가
                 </button>
@@ -206,7 +206,7 @@ const KeywordManagePage = () => {
           ) : (
             <button
               onClick={() => setShowInput(true)}
-              className="bg-[#EEF8FF] rounded-2xl px-4 py-4 text-[15px] font-semibold text-[#51A2FF] text-center active:bg-[#d6edff] transition-colors"
+              className="bg-[var(--color-primary-bg)] rounded-2xl px-4 py-4 text-[15px] font-semibold text-[var(--color-primary)] text-center active:bg-[#d6edff] transition-colors"
             >
               + 직접 키워드 추가하기
             </button>
@@ -231,7 +231,7 @@ const KeywordManagePage = () => {
             <div className="flex flex-col gap-[1px] bg-[#ebebeb] rounded-2xl overflow-hidden">
               {subscribed.map((kw) => (
                 <div key={kw} className="bg-white px-4 py-4 flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-[#EEF8FF] flex items-center justify-center flex-shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-[var(--color-primary-bg)] flex items-center justify-center flex-shrink-0">
                     <BellIcon />
                   </div>
                   <span className="flex-1 text-[15px] font-medium text-[#1A1A1A]">{kw}</span>

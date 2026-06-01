@@ -1,4 +1,4 @@
-// CONTENT-COLLECTION-SERVICE (Gateway → :8083)
+// AI-SERVICE (Gateway → /api/analysis/**)
 import { http } from './client';
 import type {
   ApiResponse,
@@ -18,21 +18,21 @@ export const analysisService = {
 
   getCritique: (id: string): Promise<CritiqueResponse> =>
     http
-      .get<ApiResponse<CritiqueResponse>>(`/api/contents/${id}/critique`)
+      .get<ApiResponse<CritiqueResponse>>(`/api/analysis/content/${id}/critique`)
       .then((res) => res.data),
 
   getContentAnalysis: (id: string): Promise<ContentAnalysisResponse> =>
     http
-      .get<ApiResponse<ContentAnalysisResponse>>(`/api/contents/${id}/analysis`)
+      .get<ApiResponse<ContentAnalysisResponse>>(`/api/analysis/content/${id}/score`)
       .then((res) => res.data),
 
   submitContent: (type: 'URL' | 'TEXT', content: string): Promise<ContentAnalysisResponse> =>
     http
-      .post<ApiResponse<ContentAnalysisResponse>>('/api/contents/submit', { type, content })
+      .post<ApiResponse<ContentAnalysisResponse>>('/api/analysis/submit', { type, content })
       .then((res) => res.data),
 
   getHistory: (): Promise<AnalysisHistoryItem[]> =>
     http
-      .get<ApiResponse<AnalysisHistoryItem[]>>('/api/contents/analysis/history')
+      .get<ApiResponse<AnalysisHistoryItem[]>>('/api/analysis/history')
       .then((res) => res.data),
 };

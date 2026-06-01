@@ -63,7 +63,7 @@ const SignupPage = () => {
                 placeholder="영문·숫자 4~20자"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.username ? "border-red-400" : "border-gray-200"}`}
+                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[var(--color-primary)] transition-colors ${fieldErrors?.username ? "border-red-400" : "border-gray-200"}`}
               />
               {fieldErrors?.username && (
                 <p className="text-xs text-red-500">{fieldErrors.username}</p>
@@ -80,7 +80,7 @@ const SignupPage = () => {
                 placeholder="홍길동"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.name ? "border-red-400" : "border-gray-200"}`}
+                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[var(--color-primary)] transition-colors ${fieldErrors?.name ? "border-red-400" : "border-gray-200"}`}
               />
               {fieldErrors?.name && (
                 <p className="text-xs text-red-500">{fieldErrors.name}</p>
@@ -97,7 +97,7 @@ const SignupPage = () => {
                 placeholder="영문·숫자·특수문자 포함 8~20자"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.password ? "border-red-400" : "border-gray-200"}`}
+                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[var(--color-primary)] transition-colors ${fieldErrors?.password ? "border-red-400" : "border-gray-200"}`}
               />
               {fieldErrors?.password && (
                 <p className="text-xs text-red-500">{fieldErrors.password}</p>
@@ -114,7 +114,7 @@ const SignupPage = () => {
                 placeholder="비밀번호를 다시 입력하세요"
                 value={passwordConfirm}
                 onChange={(e) => setPasswordConfirm(e.target.value)}
-                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${localError ? "border-red-400" : "border-gray-200"}`}
+                className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[var(--color-primary)] transition-colors ${localError ? "border-red-400" : "border-gray-200"}`}
               />
               {localError && (
                 <p className="text-xs text-red-500">{localError}</p>
@@ -130,7 +130,7 @@ const SignupPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-14 bg-[#5b9cf6] text-white text-base font-bold rounded-2xl mt-1 active:bg-[#4a8ae0] transition-colors cursor-pointer disabled:opacity-60"
+              className="w-full h-14 bg-[var(--color-primary)] text-white text-base font-bold rounded-2xl mt-1 active:bg-[var(--color-primary)] transition-colors cursor-pointer disabled:opacity-60"
             >
               {loading ? "처리 중..." : "가입하기"}
             </button>
@@ -140,7 +140,7 @@ const SignupPage = () => {
           <p className="mt-5 text-center text-sm text-gray-400">
             이미 계정이 있으신가요?{" "}
             <span
-              className="text-[#5b9cf6] font-semibold cursor-pointer"
+              className="text-[var(--color-primary)] font-semibold cursor-pointer"
               onClick={() => navigate("/login")}
             >
               로그인

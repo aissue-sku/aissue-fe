@@ -291,16 +291,26 @@ const CHARACTERS: Character[] = [
 ];
 
 // 포인트 배지 (카드용 소형)
-const PointBadgeSm = ({ price, owned, equipped }: { price: number; owned: boolean; equipped: boolean }) => (
+const PointBadgeSm = ({
+  price,
+  owned,
+  equipped,
+}: {
+  price: number;
+  owned: boolean;
+  equipped: boolean;
+}) => (
   <div
-    className={`flex items-center justify-center border border-[#51A2FF] rounded-full py-0.5 gap-0.5 ${owned ? "px-4" : "pl-3 pr-1.5"}`}
+    className={`flex items-center justify-center border border-[var(--color-primary)] rounded-full py-0.5 gap-0.5 ${owned ? "px-4" : "pl-3 pr-1.5"}`}
   >
-    <span className="text-[16px] font-bold text-[#3B91F4] leading-[1.6]">
+    <span className="text-[16px] font-bold text-[var(--color-primary)] leading-[1.6]">
       {equipped ? "착용중" : owned ? "보유중" : price}
     </span>
     {!owned && (
-      <div className="w-[18px] h-[18px] rounded-full bg-[#EEF8FF] flex items-center justify-center shrink-0">
-        <span className="text-[10px] font-bold text-[#3B91F4]">P</span>
+      <div className="w-[18px] h-[18px] rounded-full bg-[var(--color-primary-bg)] flex items-center justify-center shrink-0">
+        <span className="text-[10px] font-bold text-[var(--color-primary)]">
+          P
+        </span>
       </div>
     )}
   </div>
@@ -328,8 +338,10 @@ const CharacterCard = ({
     style={{
       width: "100%",
       height: 212,
-      background: equipped ? "#EEF8FF" : "#FBFBFB",
-      border: selected ? "1.5px solid #51A2FF" : "1px solid #F5F5F5",
+      background: equipped ? "var(--color-primary-bg)" : "#FBFBFB",
+      border: selected
+        ? "1.5px solid var(--color-primary)"
+        : "1px solid #F5F5F5",
     }}
   >
     {/* 캐릭터 이미지 */}
@@ -372,14 +384,18 @@ const CharacterShopPage = () => {
   const [selectedClothId, setSelectedClothId] = useState<string | null>(null);
   const [isExiting, setIsExiting] = useState(false);
   // 카테고리별 현재 착용 중인 캐릭터 id
-  const [equippedIds, setEquippedIds] = useState<Partial<Record<string, string>>>({});
+  const [equippedIds, setEquippedIds] = useState<
+    Partial<Record<string, string>>
+  >({});
   // 보유한 아이템 id (기본 제공 + 구매 완료)
   const [ownedIds, setOwnedIds] = useState<Set<string>>(
     () => new Set(CHARACTERS.filter((c) => c.price === 0).map((c) => c.id)),
   );
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
   const [purchasing, setPurchasing] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ msg: string; exiting: boolean } | null>(
+    null,
+  );
 
   useEffect(() => {
     const main = document.querySelector("main");
@@ -388,36 +404,41 @@ const CharacterShopPage = () => {
 
   // 마운트 시 전체 캐릭터 정보 로드
   useEffect(() => {
-    userService.getCharacter().then((data) => {
-      // 보유 아이템 초기화
-      const owned = new Set(
-        data.items
-          .filter((item) => item.purchased)
-          .flatMap((item) => {
-            const char = CHARACTERS.find((c) => c.itemCode === item.key);
-            return char ? [char.id] : [];
-          }),
-      );
-      setOwnedIds(owned);
+    userService
+      .getCharacter()
+      .then((data) => {
+        // 보유 아이템 초기화
+        const owned = new Set(
+          data.items
+            .filter((item) => item.purchased)
+            .flatMap((item) => {
+              const char = CHARACTERS.find((c) => c.itemCode === item.key);
+              return char ? [char.id] : [];
+            }),
+        );
+        setOwnedIds(owned);
 
-      // 착용 중인 아이템으로 선택 상태 초기화
-      const equipped: Partial<Record<string, string>> = {};
-      const slots: Array<[CharacterItem | null, string, (id: string | null) => void]> = [
-        [data.equipped.hat,     "모자", setSelectedHatId],
-        [data.equipped.face,    "얼굴", setSelectedFaceId],
-        [data.equipped.clothes, "옷",   setSelectedClothId],
-        [data.equipped.color,   "색상", setSelectedColorId],
-      ];
-      for (const [slotItem, category, setSelected] of slots) {
-        if (!slotItem) continue;
-        const char = CHARACTERS.find((c) => c.itemCode === slotItem.key);
-        if (char) {
-          equipped[category] = char.id;
-          setSelected(char.id);
+        // 착용 중인 아이템으로 선택 상태 초기화
+        const equipped: Partial<Record<string, string>> = {};
+        const slots: Array<
+          [CharacterItem | null, string, (id: string | null) => void]
+        > = [
+          [data.equipped.hat, "모자", setSelectedHatId],
+          [data.equipped.face, "얼굴", setSelectedFaceId],
+          [data.equipped.clothes, "옷", setSelectedClothId],
+          [data.equipped.color, "색상", setSelectedColorId],
+        ];
+        for (const [slotItem, category, setSelected] of slots) {
+          if (!slotItem) continue;
+          const char = CHARACTERS.find((c) => c.itemCode === slotItem.key);
+          if (char) {
+            equipped[category] = char.id;
+            setSelected(char.id);
+          }
         }
-      }
-      setEquippedIds(equipped);
-    }).catch(() => {});
+        setEquippedIds(equipped);
+      })
+      .catch(() => {});
   }, []);
 
   const selectedHat = CHARACTERS.find((c) => c.id === selectedHatId);
@@ -473,16 +494,19 @@ const CharacterShopPage = () => {
     !!currentSelected && equippedIds[activeCategory] === currentSelected.id;
 
   // 선택된 아이템을 보유 중인지
-  const isCurrentOwned =
-    !!currentSelected && ownedIds.has(currentSelected.id);
+  const isCurrentOwned = !!currentSelected && ownedIds.has(currentSelected.id);
 
   const setEquipped = (category: string, id: string | null) => {
     setEquippedIds((prev) => ({ ...prev, [category]: id ?? undefined }));
   };
 
   const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 2000);
+    setToast({ msg, exiting: false });
+    setTimeout(
+      () => setToast((prev) => (prev ? { ...prev, exiting: true } : null)),
+      1500,
+    );
+    setTimeout(() => setToast(null), 1500);
   };
 
   const handlePurchase = async () => {
@@ -520,6 +544,7 @@ const CharacterShopPage = () => {
     try {
       await userService.equipItem(currentSelected.itemCode);
       setEquipped(currentSelected.category, currentSelected.id);
+      showToast(`${currentSelected.name} 착용 완료!`);
     } catch {
       // 착용 실패 시 UI 변경 없음
     }
@@ -537,14 +562,12 @@ const CharacterShopPage = () => {
       } else if (currentSelected.category === "옷") {
         await userService.unequipItem("CLOTHES");
       }
-      if (currentSelected.category === "모자") setSelectedHatId(null);
-      else if (currentSelected.category === "얼굴") setSelectedFaceId(null);
-      else if (currentSelected.category === "색상") {
-        // 색상 해제 = 아이슈(기본)로 복귀
+      if (currentSelected.category === "색상") {
         const defaultColor = CHARACTERS.find((c) => c.itemCode === "AISSUE");
         setSelectedColorId(defaultColor?.id ?? null);
-      } else if (currentSelected.category === "옷") setSelectedClothId(null);
+      }
       setEquipped(currentSelected.category, null);
+      showToast(`${currentSelected.name} 해제 완료!`);
     } catch {
       // 해제 실패 시 UI 변경 없음
     }
@@ -562,193 +585,241 @@ const CharacterShopPage = () => {
   };
 
   return (
-    <div
-      className={`flex flex-col min-h-full ${isExiting ? "animate-slide-out" : "animate-slide-in"}`}
-      style={{
-        background: "linear-gradient(to bottom, #FBFBFB 55%, #E1F3FF 100%)",
-      }}
-    >
-      {/* 헤더 (fixed) */}
-      <header className="fixed top-6 left-0 right-0 z-10 h-16 flex items-end justify-center px-5 pb-3 bg-transparent">
-        <button
-          onClick={handleBack}
-          className="absolute left-5 bottom-3 p-1 cursor-pointer active:opacity-60 transition-opacity"
-          aria-label="뒤로 가기"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M15 18l-6-6 6-6"
-              stroke="#1A1A1A"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
-        <h1 className="text-[18px] font-semibold text-[#1A1A1A] tracking-[-0.45px]">
-          캐릭터 상점
-        </h1>
-      </header>
-
-      {/* 히어로: 마스코트 */}
-      <div className="flex flex-col items-center pt-32 pb-6">
-        <div className="relative w-28 h-28">
-          {/* 베이스 마스코트 (색상 필터 적용) */}
-          <img
-            src={heroBase}
-            alt="아이슈 마스코트"
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-[90%] h-auto"
-            style={{ filter: heroFilter }}
-          />
-          {/* 옷 오버레이 */}
-          {heroCloth && (
-            <img
-              src={heroCloth}
-              alt=""
-              className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-[90%] h-auto"
-            />
-          )}
-          {/* 모자 오버레이 */}
-          {heroHat && (
-            <img
-              src={heroHat}
-              alt=""
-              className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-[90%] h-auto"
-            />
-          )}
-          <img
-            src={mascotGlass}
-            alt=""
-            className="absolute top-[10%] left-[16%] w-[70%] h-auto animate-glasses"
-            style={{ filter: heroFilter }}
-          />
-          <img
-            src={mascotHand}
-            alt=""
-            className="absolute top-[20%] left-[75%] w-[38%] h-auto animate-hand"
-            style={{ filter: heroFilter }}
-          />
-        </div>
-      </div>
-
-      {/* 흰색 바텀 시트 */}
-      <div
-        className="flex-1 bg-white shadow-[0px_-2px_4px_0px_rgba(0,0,0,0.1)]"
-        style={{ borderRadius: "20px 20px 0 0" }}
-      >
-        {/* 카테고리 탭 */}
-        <div className="flex gap-px items-center px-5 pt-4 pb-2">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => handleCategoryChange(cat)}
-              className="flex items-center justify-center h-[31px] px-[10px] rounded-[30px] cursor-pointer transition-colors"
-              style={{
-                background: activeCategory === cat ? "#E3E8EA" : "transparent",
-              }}
+    <>
+      {toast &&
+        createPortal(
+          <div
+            className={`fixed left-1/2 top-1/2 z-[9999] pointer-events-none ${toast.exiting ? "animate-toast-out" : "animate-toast-in"}`}
+            style={{ transform: "translate(-50%, -50%)" }}
+          >
+            <div
+              className="bg-white rounded-2xl px-6 py-5 flex flex-col items-center gap-3 min-w-[200px]"
+              style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.18)" }}
             >
-              <span className="text-[14px] font-semibold text-[#303D4C] tracking-[0.35px] whitespace-nowrap">
-                {cat}
-              </span>
-            </button>
-          ))}
+              <div
+                className="w-14 h-14 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: "var(--color-primary-bg)" }}
+              >
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M20 6L9 17l-5-5"
+                    stroke="var(--color-primary)"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <p className="text-[15px] font-bold text-[#1A1A1A] text-center">
+                {toast.msg}
+              </p>
+            </div>
+          </div>,
+          document.body,
+        )}
+      <div
+        className={`flex flex-col min-h-full ${isExiting ? "animate-slide-out" : "animate-slide-in"}`}
+        style={{
+          background: "linear-gradient(to bottom, #FBFBFB 55%, #E1F3FF 100%)",
+        }}
+      >
+        {/* 헤더 (fixed) */}
+        <header className="fixed top-6 left-0 right-0 z-10 h-16 flex items-end justify-center px-5 pb-3 bg-transparent">
+          <button
+            onClick={handleBack}
+            className="absolute left-5 bottom-3 p-1 cursor-pointer active:opacity-60 transition-opacity"
+            aria-label="뒤로 가기"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M15 18l-6-6 6-6"
+                stroke="#1A1A1A"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+          <h1 className="text-[18px] font-semibold text-[#1A1A1A] tracking-[-0.45px]">
+            캐릭터 상점
+          </h1>
+        </header>
+
+        {/* 히어로: 마스코트 */}
+        <div className="flex flex-col items-center pt-32 pb-6">
+          <div className="relative w-28 h-28">
+            {/* 베이스 마스코트 (색상 필터 적용) */}
+            <img
+              src={heroBase}
+              alt="아이슈 마스코트"
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-[90%] h-auto"
+              style={{ filter: heroFilter }}
+            />
+            {/* 옷 오버레이 */}
+            {heroCloth && (
+              <img
+                src={heroCloth}
+                alt=""
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-[90%] h-auto"
+              />
+            )}
+            {/* 모자 오버레이 */}
+            {heroHat && (
+              <img
+                src={heroHat}
+                alt=""
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-[90%] h-auto"
+              />
+            )}
+            <img
+              src={mascotGlass}
+              alt=""
+              className="absolute top-[10%] left-[16%] w-[70%] h-auto animate-glasses"
+              style={{ filter: heroFilter }}
+            />
+            <img
+              src={mascotHand}
+              alt=""
+              className="absolute top-[20%] left-[75%] w-[38%] h-auto animate-hand"
+              style={{ filter: heroFilter }}
+            />
+          </div>
         </div>
 
-        {/* 캐릭터 그리드 */}
+        {/* 흰색 바텀 시트 */}
         <div
-          key={activeCategory}
-          className="grid grid-cols-2 gap-[6px] px-5 pt-2"
-          style={{ paddingBottom: 60 }}
+          className="flex-1 bg-white shadow-[0px_-2px_4px_0px_rgba(0,0,0,0.1)]"
+          style={{ borderRadius: "20px 20px 0 0" }}
         >
-          {CHARACTERS.filter((c) => c.category === activeCategory).map(
-            (character, index) => (
-              <div
-                key={character.id}
+          {/* 카테고리 탭 */}
+          <div className="flex gap-px items-center px-5 pt-4 pb-2">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => handleCategoryChange(cat)}
+                className="flex items-center justify-center h-[31px] px-[10px] rounded-[30px] cursor-pointer transition-colors"
                 style={{
-                  animation: `card-enter 420ms cubic-bezier(0.34, 1.4, 0.64, 1) ${index * 55}ms both`,
+                  background:
+                    activeCategory === cat ? "#E3E8EA" : "transparent",
                 }}
               >
-                <CharacterCard
-                  character={character}
-                  selected={getSelectedId(character.category) === character.id}
-                  owned={ownedIds.has(character.id)}
-                  equipped={equippedIds[character.category] === character.id}
-                  onSelect={() => handleSelect(character)}
-                />
-              </div>
-            ),
-          )}
-        </div>
-      </div>
+                <span className="text-[14px] font-semibold text-[#303D4C] tracking-[0.35px] whitespace-nowrap">
+                  {cat}
+                </span>
+              </button>
+            ))}
+          </div>
 
-      {createPortal(
-        <div
-          className="fixed bottom-16 left-1/2 w-full max-w-[430px] z-50 bg-white border-t border-[#F0F0F0] shadow-[0_-4px_12px_rgba(0,0,0,0.06)] px-5 py-3 transition-transform duration-300 ease-out"
-          style={{
-            // 색상/얼굴은 이미 착용 중이면 버튼 바 숨김
-            transform:
-              currentSelected &&
-              !(isCurrentEquipped && (activeCategory === "색상" || activeCategory === "얼굴"))
-                ? "translateX(-50%) translateY(0)"
-                : "translateX(-50%) translateY(300%)",
-          }}
-        >
-          {/* 구매 성공 토스트 */}
-          {toast && (
-            <div className="w-full flex justify-center mb-2">
-              <span className="bg-[#1A1A1A] text-white text-[13px] font-semibold px-4 py-2 rounded-full">
-                {toast}
-              </span>
-            </div>
-          )}
-          {isCurrentOwned ? (
-            // 보유 중인 아이템
-            activeCategory === "색상" || activeCategory === "얼굴" ? (
-              // 색상/얼굴: 해제 없이 착용하기만
-              <button
-                onClick={handleEquip}
-                className="w-full h-[50px] rounded-[10px] text-[16px] font-bold text-white bg-[#51A2FF] active:opacity-80 transition-opacity"
-              >
-                {currentSelected!.name} 착용하기
-              </button>
-            ) : isCurrentEquipped ? (
-              // 모자/옷: 해제 가능
-              <button
-                onClick={handleUnequip}
-                className="w-full h-[50px] rounded-[10px] text-[16px] font-bold text-white bg-[#FF6B6B] active:opacity-80 transition-opacity"
-              >
-                {currentSelected!.name} 해제하기
-              </button>
+          {/* 캐릭터 그리드 */}
+          <div
+            key={activeCategory}
+            className="grid grid-cols-2 gap-[6px] px-5 pt-2"
+            style={{ paddingBottom: 16 }}
+          >
+            {CHARACTERS.filter((c) => c.category === activeCategory).map(
+              (character, index) => (
+                <div
+                  key={character.id}
+                  style={{
+                    animation: `card-enter 420ms cubic-bezier(0.34, 1.4, 0.64, 1) ${index * 55}ms both`,
+                  }}
+                >
+                  <CharacterCard
+                    character={character}
+                    selected={
+                      getSelectedId(character.category) === character.id
+                    }
+                    owned={ownedIds.has(character.id)}
+                    equipped={equippedIds[character.category] === character.id}
+                    onSelect={() => handleSelect(character)}
+                  />
+                </div>
+              ),
+            )}
+          </div>
+        </div>
+
+        {createPortal(
+          <div
+            className="w-full bg-white border-t border-[#F0F0F0] shadow-[0_-4px_12px_rgba(0,0,0,0.06)] px-5 py-3 transition-all duration-300 ease-out overflow-hidden"
+            style={{
+              maxHeight:
+                currentSelected &&
+                !(
+                  isCurrentEquipped &&
+                  (activeCategory === "색상" || activeCategory === "얼굴")
+                )
+                  ? "120px"
+                  : "0px",
+              paddingTop:
+                currentSelected &&
+                !(
+                  isCurrentEquipped &&
+                  (activeCategory === "색상" || activeCategory === "얼굴")
+                )
+                  ? undefined
+                  : "0",
+              paddingBottom:
+                currentSelected &&
+                !(
+                  isCurrentEquipped &&
+                  (activeCategory === "색상" || activeCategory === "얼굴")
+                )
+                  ? undefined
+                  : "0",
+            }}
+          >
+            {isCurrentOwned ? (
+              // 보유 중인 아이템
+              activeCategory === "색상" || activeCategory === "얼굴" ? (
+                // 색상/얼굴: 해제 없이 착용하기만
+                <button
+                  onClick={handleEquip}
+                  className="w-full h-[50px] rounded-[10px] text-[16px] font-bold text-white bg-[var(--color-primary)] active:opacity-80 transition-opacity"
+                >
+                  {currentSelected!.name} 착용하기
+                </button>
+              ) : isCurrentEquipped ? (
+                // 모자/옷: 해제 가능
+                <button
+                  onClick={handleUnequip}
+                  className="w-full h-[50px] rounded-[10px] text-[16px] font-bold text-white bg-[#FF6B6B] active:opacity-80 transition-opacity"
+                >
+                  {currentSelected!.name} 해제하기
+                </button>
+              ) : (
+                <button
+                  onClick={handleEquip}
+                  className="w-full h-[50px] rounded-[10px] text-[16px] font-bold text-white bg-[var(--color-primary)] active:opacity-80 transition-opacity"
+                >
+                  {currentSelected!.name} 착용하기
+                </button>
+              )
             ) : (
-              <button
-                onClick={handleEquip}
-                className="w-full h-[50px] rounded-[10px] text-[16px] font-bold text-white bg-[#51A2FF] active:opacity-80 transition-opacity"
-              >
-                {currentSelected!.name} 착용하기
-              </button>
-            )
-          ) : (
-            <div className="flex flex-col gap-1.5">
-              {purchaseError && (
-                <p className="text-[13px] text-[#FF6B6B] text-center">{purchaseError}</p>
-              )}
-              <button
-                onClick={handlePurchase}
-                disabled={purchasing}
-                className="w-full h-[50px] rounded-[10px] text-[16px] font-bold text-white bg-[#51A2FF] active:opacity-80 transition-opacity disabled:opacity-60"
-              >
-                {purchasing
-                  ? "처리 중..."
-                  : currentSelected
-                    ? `${currentSelected.name} 구매하기 (${currentSelected.price}P)`
-                    : ""}
-              </button>
-            </div>
-          )}
-        </div>,
-        document.body,
-      )}
-    </div>
+              <div className="flex flex-col gap-1.5">
+                {purchaseError && (
+                  <p className="text-[13px] text-[#FF6B6B] text-center">
+                    {purchaseError}
+                  </p>
+                )}
+                <button
+                  onClick={handlePurchase}
+                  disabled={purchasing}
+                  className="w-full h-[50px] rounded-[10px] text-[16px] font-bold text-white bg-[var(--color-primary)] active:opacity-80 transition-opacity disabled:opacity-60"
+                >
+                  {purchasing
+                    ? "처리 중..."
+                    : currentSelected
+                      ? `${currentSelected.name} 구매하기 (${currentSelected.price}P)`
+                      : ""}
+                </button>
+              </div>
+            )}
+          </div>,
+          document.getElementById("bottom-action-bar") ?? document.body,
+        )}
+      </div>
+    </>
   );
 };
 

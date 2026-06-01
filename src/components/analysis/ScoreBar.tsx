@@ -25,14 +25,14 @@ const ScoreBar = ({ label, score, maxScore, delay = 0 }: Props) => {
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between">
         <span className="text-[14px] text-[#5E5E5E]">{label}</span>
-        <span className="text-[14px] font-semibold text-[#51A2FF]">
+        <span className="text-[14px] font-semibold text-[var(--color-primary)]">
           {score}/{maxScore}
         </span>
       </div>
       <div className="bg-[#F5F5F5] h-2 rounded-full overflow-hidden">
         <div
           ref={barRef}
-          className="bg-[#51A2FF] h-full rounded-full"
+          className="bg-[var(--color-primary)] h-full rounded-full"
           style={{ width: "0%", transition: "width 1s cubic-bezier(0.4, 0, 0.2, 1)" }}
         />
       </div>

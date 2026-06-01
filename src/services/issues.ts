@@ -1,4 +1,4 @@
-// CONTENT-COLLECTION-SERVICE (Gateway → :8083)
+// AI-SERVICE (Gateway → /api/issues/**)
 import { http } from './client';
 import type { ApiResponse } from '../types/api';
 import type { Article } from '../types';

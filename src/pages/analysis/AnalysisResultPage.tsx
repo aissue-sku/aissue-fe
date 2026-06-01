@@ -5,6 +5,7 @@ import { analysisService } from "../../services/analysis";
 import { useMascotConfig } from "../../hooks/useMascotConfig";
 import { ApiError } from "../../services/client";
 import type { CritiqueItem, ContentAnalysisResponse } from "../../types/api";
+import { extractStocks, getNaverFinanceUrl } from "../../utils/stockKeywords";
 
 interface LocationState {
   contentId?: string;
@@ -16,11 +17,11 @@ interface LocationState {
 const STATUS_THEME: Record<string, { text: string; badge: string }> = {
   주의: { text: '#E03030', badge: '#FFE8E8' },
   참고: { text: '#F07010', badge: '#FEF5D3' },
-  확인: { text: '#3B91F4', badge: '#EEF8FF' },
+  확인: { text: 'var(--color-primary)', badge: 'var(--color-primary-bg)' },
 };
 const getTheme = (status: string) => STATUS_THEME[status] ?? STATUS_THEME['참고'];
-const DESC_BG = '#EEF8FF';
-const DESC_TEXT = '#51A2FF';
+const DESC_BG = 'var(--color-primary-bg)';
+const DESC_TEXT = 'var(--color-primary)';
 
 const MAX_SCORES: Record<string, number> = {
   credibility: 25, accuracy: 25, bias: 20, crossVerification: 20, transparency: 10,
@@ -41,6 +42,8 @@ const AnalysisResultPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { contentId, title, submitResult } = (location.state as LocationState) ?? {};
+
+  const relatedStocks = useMemo(() => extractStocks(title ?? ""), [title]);
 
   const mascotConfig = useMascotConfig();
   const [critiques, setCritiques] = useState<CritiqueItem[]>([]);
@@ -106,7 +109,7 @@ const AnalysisResultPage = () => {
               style={{ filter: mascotConfig.filter }}
             />
           </div>
-          <h1 className="text-[24px] font-semibold text-[#51A2FF] text-center mt-4 leading-[160%]">
+          <h1 className="text-[24px] font-semibold text-[var(--color-primary)] text-center mt-4 leading-[160%]">
             분석 결과를 알려드릴게요.
           </h1>
         </div>
@@ -117,7 +120,7 @@ const AnalysisResultPage = () => {
 
           {loading && (
             <div className="flex justify-center py-6">
-              <div className="w-5 h-5 border-2 border-[#5b9cf6] border-t-transparent rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
             </div>
           )}
 
@@ -155,11 +158,51 @@ const AnalysisResultPage = () => {
 
           <button
             onClick={handleNext}
-            className="w-full h-[50px] bg-[#51A2FF] text-white text-lg font-semibold rounded-[8px] cursor-pointer active:opacity-90 transition-opacity"
+            className="w-full h-[50px] bg-[var(--color-primary)] text-white text-lg font-semibold rounded-[8px] cursor-pointer active:opacity-90 transition-opacity"
           >
             다음
           </button>
         </div>
+
+        {/* 관련 종목 */}
+        {relatedStocks.length > 0 && (
+          <div className="mt-4 bg-white rounded-[16px] p-5 shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_3px_rgba(0,0,0,0.1)]">
+            <p className="text-[16px] font-semibold text-[#1A1A1A] mb-3">관련 종목</p>
+            <div className="flex flex-col gap-2">
+              {relatedStocks.map((stock) => (
+                <a
+                  key={stock.code}
+                  href={getNaverFinanceUrl(stock.code)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between bg-[#F8F9FA] rounded-[10px] px-4 py-3 active:opacity-70 transition-opacity"
+                >
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-[6px] h-[6px] rounded-full flex-shrink-0"
+                      style={{ backgroundColor: 'var(--color-primary)' }}
+                    />
+                    <span className="text-[15px] font-semibold text-[#1A1A1A]">{stock.name}</span>
+                    <span className="text-[12px] text-[#999] font-medium">{stock.code}</span>
+                    <span
+                      className="text-[11px] font-semibold px-1.5 py-0.5 rounded-full"
+                      style={{
+                        backgroundColor: 'var(--color-primary-bg)',
+                        color: 'var(--color-primary)',
+                      }}
+                    >
+                      {stock.market}
+                    </span>
+                  </div>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 18l6-6-6-6" stroke="#BBBBBB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+              ))}
+            </div>
+            <p className="text-[11px] text-[#BBBBBB] mt-3 text-center">네이버 금융에서 실시간 시세를 확인하세요</p>
+          </div>
+        )}
       </div>
     </div>
   );

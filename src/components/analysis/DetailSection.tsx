@@ -14,7 +14,7 @@ interface Props {
 const DetailSection = ({ title, score, maxScore, items, isLast }: Props) => (
   <div className={`flex flex-col gap-2 pb-3 ${!isLast ? "border-b border-[#E5E5E5]" : ""}`}>
     <div className="relative flex items-center" style={{ minHeight: 21 }}>
-      <div className="absolute left-0 top-[6px] w-2 h-2 rounded-full bg-[#51A2FF]" />
+      <div className="absolute left-0 top-[6px] w-2 h-2 rounded-full bg-[var(--color-primary)]" />
       <p className="pl-4 text-[14px] font-medium text-[#1A1A1A]">
         {title} ({score}/{maxScore}점)
       </p>

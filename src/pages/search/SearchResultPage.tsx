@@ -113,9 +113,10 @@ const SearchResultPage = () => {
           <div
             key={item.id}
             onClick={() => handleNewsClick(item)}
-            className="bg-white border border-[#C8E4FF] rounded-2xl px-4 py-5 cursor-pointer active:bg-gray-50 transition-colors flex items-start gap-3 shadow-[0_2px_8px_rgba(91,156,246,0.1)]"
+            className="bg-white border border-[var(--color-primary-border)] rounded-2xl px-4 py-5 cursor-pointer active:bg-gray-50 transition-colors flex items-start gap-3"
+            style={{ boxShadow: '0 2px 8px var(--color-primary-shadow)' }}
           >
-            <span className="text-[#3B91F4] text-[18px] font-bold flex-shrink-0 leading-none mt-[3px]">
+            <span className="text-[var(--color-primary)] text-[18px] font-bold flex-shrink-0 leading-none mt-[3px]">
               {String(idx + 1).padStart(2, "0")}
             </span>
             <div className="flex flex-col gap-[6px] flex-1 min-w-0">
@@ -134,7 +135,7 @@ const SearchResultPage = () => {
         {/* 추가 로딩 인디케이터 */}
         {loading && news.length > 0 && (
           <div className="flex justify-center py-4">
-            <div className="w-5 h-5 border-2 border-[#5b9cf6] border-t-transparent rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
           </div>
         )}
 

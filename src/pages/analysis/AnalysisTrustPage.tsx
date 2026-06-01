@@ -83,7 +83,7 @@ const AnalysisTrustPage = () => {
       <div className="flex-1 overflow-y-auto flex flex-col">
       {loading && (
         <div className="flex flex-1 items-center justify-center">
-          <div className="w-6 h-6 border-2 border-[#5b9cf6] border-t-transparent rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
         </div>
       )}
 
@@ -158,12 +158,12 @@ const AnalysisTrustPage = () => {
                     <div key={i} className="flex flex-col gap-2">
                       <div className="flex items-center justify-between gap-2 bg-[#F5F5F5] rounded-[10px] px-3 py-2">
                         <p className="text-[13px] font-semibold text-[#1A1A1A] flex-1">{fc.claim}</p>
-                        <span className="text-[11px] font-semibold text-[#51A2FF] bg-[#EEF8FF] rounded-full px-2 py-0.5 flex-shrink-0">
+                        <span className="text-[11px] font-semibold text-[var(--color-primary)] bg-[var(--color-primary-bg)] rounded-full px-2 py-0.5 flex-shrink-0">
                           {fc.status}
                         </span>
                       </div>
-                      <div className="bg-[#EEF8FF] rounded-[10px] px-3 py-3">
-                        <p className="text-[12px] text-[#51A2FF] leading-[160%]">{fc.evidence}</p>
+                      <div className="bg-[var(--color-primary-bg)] rounded-[10px] px-3 py-3">
+                        <p className="text-[12px] text-[var(--color-primary)] leading-[160%]">{fc.evidence}</p>
                       </div>
                     </div>
                   ))}
@@ -175,7 +175,7 @@ const AnalysisTrustPage = () => {
             {data.relatedArticles.length > 0 && (
               <div className="bg-white px-5 py-5 flex flex-col gap-4 shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_3px_rgba(0,0,0,0.1)]">
                 <div className="flex flex-col gap-2">
-                  <h3 className="text-[18px] font-semibold text-[#51A2FF]">
+                  <h3 className="text-[18px] font-semibold text-[var(--color-primary)]">
                     신뢰도가 높은 관련 기사
                   </h3>
                   <p className="text-[14px] text-[#8F8F8F] leading-[1.6]">

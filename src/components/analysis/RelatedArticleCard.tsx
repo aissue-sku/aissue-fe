@@ -38,11 +38,11 @@ const RelatedArticleCard = ({ title, url, publisher, timeAgo, trustScore }: Prop
       <div className="flex items-center gap-1.5">
         <div className="bg-[#E5E5E5] h-[6px] w-10 rounded-full overflow-hidden">
           <div
-            className="bg-[#51A2FF] h-full rounded-full"
+            className="bg-[var(--color-primary)] h-full rounded-full"
             style={{ width: `${trustScore}%` }}
           />
         </div>
-        <span className="text-[11px] font-semibold text-[#51A2FF]">{trustScore}</span>
+        <span className="text-[11px] font-semibold text-[var(--color-primary)]">{trustScore}</span>
       </div>
     </div>
   </div>

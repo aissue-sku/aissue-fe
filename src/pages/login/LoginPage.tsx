@@ -48,7 +48,7 @@ const LoginPage = () => {
               placeholder="아이디를 입력하세요"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.username ? "border-red-400" : "border-gray-200"}`}
+              className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[var(--color-primary)] transition-colors ${fieldErrors?.username ? "border-red-400" : "border-gray-200"}`}
             />
             {fieldErrors?.username && (
               <p className="text-xs text-red-500">{fieldErrors.username}</p>
@@ -65,7 +65,7 @@ const LoginPage = () => {
               placeholder="비밀번호를 입력하세요"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[#5b9cf6] transition-colors ${fieldErrors?.password ? "border-red-400" : "border-gray-200"}`}
+              className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[var(--color-primary)] transition-colors ${fieldErrors?.password ? "border-red-400" : "border-gray-200"}`}
             />
             {fieldErrors?.password && (
               <p className="text-xs text-red-500">{fieldErrors.password}</p>
@@ -79,7 +79,7 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-14 bg-[#5b9cf6] text-white text-base font-bold rounded-2xl mt-1 active:bg-[#4a8ae0] transition-colors cursor-pointer disabled:opacity-60"
+            className="w-full h-14 bg-[var(--color-primary)] text-white text-base font-bold rounded-2xl mt-1 active:bg-[var(--color-primary)] transition-colors cursor-pointer disabled:opacity-60"
           >
             {loading ? "로그인 중..." : "로그인"}
           </button>
@@ -89,7 +89,7 @@ const LoginPage = () => {
         <p className="mt-5 text-center text-sm text-gray-400">
           계정이 없으신가요?{" "}
           <span
-            className="text-[#5b9cf6] font-semibold cursor-pointer"
+            className="text-[var(--color-primary)] font-semibold cursor-pointer"
             onClick={() => navigate("/signup")}
           >
             회원가입
@@ -101,7 +101,7 @@ const LoginPage = () => {
           type="button"
           onClick={testLogin}
           disabled={loading}
-          className="w-full mt-3 text-sm font-bold text-[#5b9cf6] cursor-pointer text-center disabled:opacity-60"
+          className="w-full mt-3 text-sm font-bold text-[var(--color-primary)] cursor-pointer text-center disabled:opacity-60"
         >
           Skip for now
         </button>

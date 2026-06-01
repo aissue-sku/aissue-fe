@@ -48,7 +48,7 @@ const SearchPage = () => {
         />
         {query.trim() && (
           <button onClick={() => goToResult(query)} className="flex-shrink-0">
-            <Search size={18} className="text-[#5b9cf6]" />
+            <Search size={18} className="text-[var(--color-primary)]" />
           </button>
         )}
       </div>
@@ -65,7 +65,7 @@ const SearchPage = () => {
             <button
               key={item.keyword}
               onClick={() => goToResult(item.keyword)}
-              className="px-4 py-1 rounded-full text-sm font-semibold bg-[#F2F3F5] text-[#697584] active:bg-[#5b9cf6] active:text-white transition-colors cursor-pointer"
+              className="px-4 py-1 rounded-full text-sm font-semibold bg-[#F2F3F5] text-[#697584] active:bg-[var(--color-primary)] active:text-white transition-colors cursor-pointer"
             >
               {item.keyword}
             </button>
@@ -75,7 +75,7 @@ const SearchPage = () => {
 
       {/* 급상승 키워드 */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[24px] font-semibold text-[#3B91F4] leading-[22px] tracking-[0px]">
+        <h2 className="text-[24px] font-semibold text-[var(--color-primary)] leading-[22px] tracking-[0px]">
           급상승 키워드 Top 10
         </h2>
         <span className="text-xs text-[#737E8C]">(최근 1시간)</span>

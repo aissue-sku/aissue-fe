@@ -29,7 +29,12 @@ const BottomNav = () => {
             onClick={() => navigate(path)}
             className="flex items-center justify-center w-12 h-12 cursor-pointer"
           >
-            <img src={active ? activeIcon : icon} alt={path} className="w-8 h-8" />
+            <img
+              src={active ? activeIcon : icon}
+              alt={path}
+              className="w-8 h-8"
+              style={active ? { filter: 'var(--color-primary-filter)' } : undefined}
+            />
           </button>
         );
       })}

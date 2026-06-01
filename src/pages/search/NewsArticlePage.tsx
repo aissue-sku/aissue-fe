@@ -55,13 +55,13 @@ const NewsArticlePage = () => {
         {/* 기사 보러가기 */}
         <button
           onClick={handleOpenArticle}
-          className="w-full h-[52px] rounded-[12px] border border-[#51A2FF] text-[16px] font-semibold text-[#51A2FF] bg-[#EEF8FF] active:bg-[#dff0ff] transition-colors"
+          className="w-full h-[52px] rounded-[12px] border border-[var(--color-primary)] text-[16px] font-semibold text-[var(--color-primary)] bg-[var(--color-primary-bg)] active:bg-[#dff0ff] transition-colors"
         >
           기사 보러가기
         </button>
 
         {/* 분석 유도 카드 */}
-        <div className="rounded-[16px] bg-[#EEF8FF] px-4 pt-4 pb-4 flex flex-col gap-4">
+        <div className="rounded-[16px] bg-[var(--color-primary-bg)] px-4 pt-4 pb-4 flex flex-col gap-4">
           <div className="flex items-center gap-5">
             {/* 마스코트: 몸통 + 손 */}
             <div className="relative w-9 flex-shrink-0">
@@ -75,17 +75,17 @@ const NewsArticlePage = () => {
             <div className="flex flex-col gap-[2px]">
               <p className="text-[15px] font-semibold leading-[1.5] text-[#1a1a1a]">
                 이 기사,{" "}
-                <span className="text-[#51A2FF]">그대로 믿어도 괜찮을까요?</span>
+                <span className="text-[var(--color-primary)]">그대로 믿어도 괜찮을까요?</span>
               </p>
               <p className="text-[14px] leading-[1.5] text-[#1a1a1a]">
-                <span className="text-[#51A2FF] font-semibold">AI가 분석한 결과</span>를 확인해보세요
+                <span className="text-[var(--color-primary)] font-semibold">AI가 분석한 결과</span>를 확인해보세요
               </p>
             </div>
           </div>
 
           <button
             onClick={handleAnalyze}
-            className="w-full h-[50px] rounded-[12px] bg-[#51A2FF] text-white text-[16px] font-semibold active:opacity-90 transition-opacity"
+            className="w-full h-[50px] rounded-[12px] bg-[var(--color-primary)] text-white text-[16px] font-semibold active:opacity-90 transition-opacity"
           >
             분석 결과 보기
           </button>

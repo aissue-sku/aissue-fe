@@ -17,7 +17,7 @@ const BackIcon = () => (
 );
 
 const scoreColor = (score: number) => {
-  if (score >= 70) return { text: "#3B91F4", bg: "#EEF8FF" };
+  if (score >= 70) return { text: "var(--color-primary)", bg: "var(--color-primary-bg)" };
   if (score >= 40) return { text: "#F07010", bg: "#FEF5D3" };
   return { text: "#E03030", bg: "#FFE8E8" };
 };
@@ -104,7 +104,7 @@ const AnalysisHistoryPage = () => {
                     },
                   });
                 }}
-                className={`bg-white rounded-2xl p-4 border border-[#F0F0F0] flex flex-col gap-2 text-left transition-colors w-full ${item.contentId ? "active:bg-[#F7F9FF] cursor-pointer" : "cursor-default opacity-60"}`}
+                className={`bg-white rounded-2xl p-4 border border-[#F0F0F0] flex flex-col gap-2 text-left transition-colors w-full ${item.contentId ? "active:bg-[var(--color-primary-bg)] cursor-pointer" : "cursor-default opacity-60"}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <p className="text-[14px] font-semibold text-[#1A1A1A] leading-snug line-clamp-2 flex-1">

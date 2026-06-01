@@ -4,10 +4,14 @@ import mascotHand from "../../assets/mascot-hand.png";
 import { analysisService } from "../../services/analysis";
 import { ApiError } from "../../services/client";
 import { useMascotConfig } from "../../hooks/useMascotConfig";
+import type { ContentAnalysisResponse } from "../../types/api";
 
 const FAST_DURATION = 3000;
-const SLOW_CAP = 78;
-const SLOW_REACH_MS = 7000;
+
+// 각 스텝별 목표 진행도 (%)
+const STEP_TARGETS = [14, 30, 48, 63, 76];
+const STEP_ANIM_MS = 1300;  // 스텝 내 바 이동 시간
+const STEP_PAUSE_MS = 650;  // 스텝 사이 멈춤 시간
 
 const STEPS = [
   "기사 내용 수집 중...",
@@ -73,47 +77,82 @@ const AnalysisPage = () => {
       };
     }
 
-    // URL 제출 flow: 서서히 78%까지 채우다가 API 완료 시 100% 점프
+    // URL 제출 flow: 스텝별로 바를 천천히 채우고 마지막 스텝에서 API 완료 대기
     if (!url.trim()) return;
 
-    let apiDone = false;
+    let apiComplete = false;
+    let lastStepDone = false;
+    let pendingResult: ContentAnalysisResponse | null = null;
+    let stopped = false;
+    let pauseTimer: ReturnType<typeof setTimeout> | null = null;
 
-    const animate = (ts: number) => {
-      if (!startRef.current) startRef.current = ts;
-      const elapsed = ts - startRef.current;
-      const t = Math.min(elapsed / SLOW_REACH_MS, 1);
-      const eased = (1 - Math.pow(1 - t, 2)) * SLOW_CAP;
-      setProgress(eased);
-      if (!apiDone) rafRef.current = requestAnimationFrame(animate);
+    const finishWithResult = (result: ContentAnalysisResponse) => {
+      if (cancelled) return;
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      setJumping(true);
+      setProgress(100);
+      setTimeout(() => {
+        if (!cancelled) navigate("/analysis/result", {
+          state: { submitResult: result, title: locationState?.title },
+        });
+      }, 500);
     };
-    rafRef.current = requestAnimationFrame(animate);
 
-    let msgIdx = 0;
-    const msgTimer = setInterval(() => {
-      msgIdx = (msgIdx + 1) % STEPS.length;
-      setStepIndex(msgIdx);
-    }, 1800);
+    const animateTo = (from: number, to: number, duration: number, onDone: () => void) => {
+      let start: number | null = null;
+      const tick = (ts: number) => {
+        if (cancelled || stopped) return;
+        if (!start) start = ts;
+        const t = Math.min((ts - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 2);
+        setProgress(from + (to - from) * eased);
+        if (t < 1) {
+          rafRef.current = requestAnimationFrame(tick);
+        } else {
+          onDone();
+        }
+      };
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    const runStep = (stepIdx: number) => {
+      if (cancelled || stopped) return;
+      setStepIndex(stepIdx);
+      const from = stepIdx === 0 ? 0 : STEP_TARGETS[stepIdx - 1];
+      const to = STEP_TARGETS[stepIdx];
+
+      animateTo(from, to, STEP_ANIM_MS, () => {
+        if (cancelled || stopped) return;
+        if (stepIdx < STEPS.length - 1) {
+          pauseTimer = setTimeout(() => {
+            if (!cancelled && !stopped) runStep(stepIdx + 1);
+          }, STEP_PAUSE_MS);
+        } else {
+          // 마지막 스텝 완료 — API 결과 대기
+          lastStepDone = true;
+          if (apiComplete && pendingResult) finishWithResult(pendingResult);
+        }
+      });
+    };
+
+    runStep(0);
 
     analysisService
       .submitContent("URL", url.trim())
       .then((result) => {
         if (cancelled) return;
-        apiDone = true;
-        if (rafRef.current) cancelAnimationFrame(rafRef.current);
-        clearInterval(msgTimer);
-        setJumping(true);
-        setProgress(100);
-        setTimeout(() => {
-          if (!cancelled) navigate("/analysis/result", {
-            state: { submitResult: result, title: locationState?.title },
-          });
-        }, 500);
+        apiComplete = true;
+        if (lastStepDone) {
+          finishWithResult(result);
+        } else {
+          pendingResult = result;
+        }
       })
       .catch((e) => {
         if (cancelled) return;
-        apiDone = true;
+        stopped = true;
+        if (pauseTimer) clearTimeout(pauseTimer);
         if (rafRef.current) cancelAnimationFrame(rafRef.current);
-        clearInterval(msgTimer);
         setUrlError(
           e instanceof ApiError ? e.message : "올바른 기사 URL을 입력해 주세요.",
         );
@@ -122,9 +161,9 @@ const AnalysisPage = () => {
 
     return () => {
       cancelled = true;
-      apiDone = true;
+      stopped = true;
+      if (pauseTimer) clearTimeout(pauseTimer);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      clearInterval(msgTimer);
       startRef.current = null;
     };
   }, [loading, navigate, url, locationState, hasContentId]);
@@ -158,12 +197,12 @@ const AnalysisPage = () => {
           )}
         </div>
         <div className="w-full flex flex-col items-center gap-4">
-          <p key={title} className="text-[18px] font-bold text-[#51A2FF] animate-fade-in">
+          <p key={title} className="text-[18px] font-bold text-[var(--color-primary)] animate-fade-in">
             {title}
           </p>
           <div className="w-full h-[10px] bg-[#E0E0E0] rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#51A2FF] rounded-full"
+              className="h-full bg-[var(--color-primary)] rounded-full"
               style={{
                 width: `${progress}%`,
                 transition: jumping ? "width 0.5s ease" : "none",
@@ -205,7 +244,7 @@ const AnalysisPage = () => {
         </div>
 
         {/* 타이틀 */}
-        <h1 className="text-[24px] font-semibold text-[#51A2FF] text-center leading-[160%] tracking-[0px]">
+        <h1 className="text-[24px] font-semibold text-[var(--color-primary)] text-center leading-[160%] tracking-[0px]">
           내가 보는 기사,
           <br />
           믿어도 되는지 확인해보세요!
@@ -224,7 +263,7 @@ const AnalysisPage = () => {
             className={`w-full h-[56px] border rounded-xl px-4 text-[16px] text-gray-700 placeholder-gray-400 outline-none transition-colors ${
               urlError
                 ? "border-red-400 focus:border-red-400"
-                : "border-[#3B91F4]"
+                : "border-[var(--color-primary)]"
             }`}
           />
           {urlError ? (
@@ -240,7 +279,7 @@ const AnalysisPage = () => {
       {/* 분석 버튼 */}
       <button
         onClick={handleAnalyze}
-        className="w-full h-[50px] bg-[#51A2FF] text-white text-lg font-semibold rounded-[8px] cursor-pointer active:opacity-90 transition-opacity"
+        className="w-full h-[50px] bg-[var(--color-primary)] text-white text-lg font-semibold rounded-[8px] cursor-pointer active:opacity-90 transition-opacity"
       >
         신뢰도 분석하기
       </button>

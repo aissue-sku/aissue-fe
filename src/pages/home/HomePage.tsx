@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import bellIcon from "../../assets/bell.svg";
 import bellBlueIcon from "../../assets/bell-blue.svg";
@@ -103,20 +103,20 @@ const KeywordSection = ({
       <div className="px-5 pb-3">
         <button
           onClick={() => navigate("/profile/keywords")}
-          className="w-full bg-white border border-[#c8dff8] rounded-2xl px-4 py-4 flex items-center gap-3 active:bg-[#F7F9FF] transition-colors"
+          className="w-full bg-white border border-[var(--color-primary-border)] rounded-2xl px-4 py-4 flex items-center gap-3 active:bg-[var(--color-primary-bg)] transition-colors"
         >
-          <div className="w-9 h-9 rounded-full bg-[#EEF8FF] flex items-center justify-center flex-shrink-0">
+          <div className="w-9 h-9 rounded-full bg-[var(--color-primary-bg)] flex items-center justify-center flex-shrink-0">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path
                 d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
-                stroke="#51A2FF"
+                style={{ stroke: 'var(--color-primary)' }}
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
               <path
                 d="M13.73 21a2 2 0 0 1-3.46 0"
-                stroke="#51A2FF"
+                style={{ stroke: 'var(--color-primary)' }}
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -160,8 +160,8 @@ const KeywordSection = ({
             onClick={() => setSelected(kw)}
             className={`flex-shrink-0 px-3 py-1.5 rounded-full text-[13px] font-semibold transition-colors ${
               selected === kw
-                ? "bg-[#51A2FF] text-white"
-                : "bg-white text-[#51A2FF] border border-[#c8dff8]"
+                ? "bg-[var(--color-primary)] text-white"
+                : "bg-white text-[var(--color-primary)] border border-[var(--color-primary-border)]"
             }`}
           >
             {kw}
@@ -200,7 +200,7 @@ const KeywordSection = ({
             <button
               key={item.id}
               onClick={() => onArticleClick(item.url)}
-              className={`w-full flex items-center gap-3 px-4 py-3 active:bg-[#F7F9FF] transition-colors text-left ${
+              className={`w-full flex items-center gap-3 px-4 py-3 active:bg-[var(--color-primary-bg)] transition-colors text-left ${
                 i < news.length - 1 ? "border-b border-[#F0F0F0]" : ""
               }`}
             >
@@ -261,6 +261,7 @@ const NewsCardSkeleton = ({ active = false }: { active?: boolean }) => (
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [notificationCount, setNotificationCount] = useState(0);
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -277,13 +278,17 @@ const HomePage = () => {
         .then(setNotificationCount)
         .catch(() => {});
     };
-    fetchCount();
+    // 딜레이를 줘서 이전 페이지의 읽음/삭제 API가 서버에 반영된 후 조회
+    const timer = setTimeout(fetchCount, 300);
     const onVisible = () => {
       if (!document.hidden) fetchCount();
     };
     document.addEventListener("visibilitychange", onVisible);
-    return () => document.removeEventListener("visibilitychange", onVisible);
-  }, []);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [location.key]);
 
   useEffect(() => {
     issueService
@@ -424,7 +429,7 @@ const HomePage = () => {
       ref={pageRef}
       className="relative min-h-full"
       style={{
-        background: `linear-gradient(to top, #E1F3FF ${bgPct}, white ${bgPct})`,
+        background: `linear-gradient(to top, var(--color-primary-bg) ${bgPct}, white ${bgPct})`,
       }}
     >
       {/* 알림 버튼 */}
@@ -437,6 +442,7 @@ const HomePage = () => {
             src={notificationCount > 0 ? bellBlueIcon : bellIcon}
             alt="알림"
             className="w-9 h-9"
+            style={notificationCount > 0 ? { filter: 'var(--color-primary-filter)' } : undefined}
           />
           {notificationCount > 0 && (
             <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
@@ -453,30 +459,35 @@ const HomePage = () => {
           src={star}
           alt=""
           className="absolute top-[17rem] left-[80%] w-8 animate-star"
+          style={{ filter: 'var(--color-primary-filter)' }}
         />
         <img
           src={star}
           alt=""
           className="absolute top-[2rem] left-[30%] w-6 animate-star-delay-1"
+          style={{ filter: 'var(--color-primary-filter)' }}
         />
         <img
           src={star}
           alt=""
           className="absolute top-[15rem] left-[12%] w-8 animate-star-delay-2"
+          style={{ filter: 'var(--color-primary-filter)' }}
         />
         <img
           src={star}
           alt=""
           className="absolute top-[8rem] left-[7%] w-4 animate-star-delay-3"
+          style={{ filter: 'var(--color-primary-filter)' }}
         />
         <img
           src={star}
           alt=""
           className="absolute top-[8.5rem] right-[8%] w-5 animate-star-delay-4"
+          style={{ filter: 'var(--color-primary-filter)' }}
         />
 
         <div className="relative w-28">
-          <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-52 h-28 bg-[#C8E4FF] rounded-full blur-xl opacity-60" />
+          <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-52 h-28 rounded-full blur-xl opacity-60" style={{ backgroundColor: 'var(--color-primary-border)' }} />
           <img
             src={mascotConfig.faceImage}
             alt="아이슈 마스코트"
@@ -510,7 +521,7 @@ const HomePage = () => {
             style={{ filter: mascotConfig.filter }}
           />
         </div>
-        <h2 className="text-xl font-bold text-[#51A2FF] tracking-normal mt-2">
+        <h2 className="text-xl font-bold text-[var(--color-primary)] tracking-normal mt-2">
           FOR YOU
         </h2>
         <p className="text-sm text-gray-400 mt-1 mb-4">
@@ -545,6 +556,9 @@ const HomePage = () => {
           >
             {clonedArticles.map((article, index) => {
               const dist = Math.min(Math.abs(index - CLONES), 5);
+              const isActive =
+                toArticleIndex(articles.length, index) ===
+                toArticleIndex(articles.length, activeIndex);
               return (
                 <div
                   key={`${article.id}-${index}`}
@@ -556,18 +570,18 @@ const HomePage = () => {
                 >
                   <NewsCard
                     article={article}
-                    active={
-                      toArticleIndex(articles.length, index) ===
-                      toArticleIndex(articles.length, activeIndex)
-                    }
-                    onClick={() =>
-                      navigate("/analysis", {
-                        state: {
-                          contentId: article.id,
-                          title: article.title,
-                          autoStart: true,
-                        },
-                      })
+                    active={isActive}
+                    onClick={
+                      isActive
+                        ? () =>
+                            navigate("/analysis", {
+                              state: {
+                                contentId: article.id,
+                                title: article.title,
+                                autoStart: true,
+                              },
+                            })
+                        : undefined
                     }
                   />
                 </div>
