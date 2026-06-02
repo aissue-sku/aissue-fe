@@ -63,14 +63,8 @@ const AnalysisTrustPage = () => {
   useEffect(() => {
     if (submitResult?.stocks) {
       setRelatedStocks(submitResult.stocks);
-      return;
     }
-    if (!contentId) return;
-    analysisService
-      .getStockAnalysis(Number(contentId))
-      .then(setRelatedStocks)
-      .catch(() => setRelatedStocks([]));
-  }, [contentId, submitResult]);
+  }, [submitResult]);
 
   const handleBack = () => {
     setIsExiting(true);

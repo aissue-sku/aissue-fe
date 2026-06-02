@@ -7,7 +7,6 @@ import type {
   CritiqueResponse,
   ContentAnalysisResponse,
   AnalysisHistoryItem,
-  StockAnalysisResponse,
 } from '../types/api';
 
 export const analysisService = {
@@ -37,8 +36,4 @@ export const analysisService = {
       .get<ApiResponse<AnalysisHistoryItem[]>>('/api/analysis/history')
       .then((res) => res.data),
 
-  getStockAnalysis: (contentId: number): Promise<StockAnalysisResponse[]> =>
-    http
-      .get<ApiResponse<StockAnalysisResponse[]>>(`/api/analysis/stocks?contentId=${contentId}`)
-      .then((res) => res.data),
 };
