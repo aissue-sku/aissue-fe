@@ -37,7 +37,7 @@ import mascotPants from "../../assets/mascot-pants.png";
 import mascotPinkskirt from "../../assets/mascot-pinkskirt.png";
 import mascotSuit from "../../assets/mascot-suit.png";
 
-const CATEGORIES = ["모자", "얼굴", "옷", "색상", "기타"];
+const CATEGORIES = ["모자", "얼굴", "옷", "색상"];
 
 interface Character {
   id: string;
@@ -565,6 +565,10 @@ const CharacterShopPage = () => {
       if (currentSelected.category === "색상") {
         const defaultColor = CHARACTERS.find((c) => c.itemCode === "AISSUE");
         setSelectedColorId(defaultColor?.id ?? null);
+      } else if (currentSelected.category === "모자") {
+        setSelectedHatId(null);
+      } else if (currentSelected.category === "옷") {
+        setSelectedClothId(null);
       }
       setEquipped(currentSelected.category, null);
       showToast(`${currentSelected.name} 해제 완료!`);

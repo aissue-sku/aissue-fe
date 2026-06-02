@@ -93,7 +93,7 @@ const AnalysisPage = () => {
       setProgress(100);
       setTimeout(() => {
         if (!cancelled) navigate("/analysis/result", {
-          state: { submitResult: result, title: locationState?.title },
+          state: { submitResult: result, title: locationState?.title, contentId: String(result.contentId) },
         });
       }, 500);
     };

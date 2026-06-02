@@ -35,10 +35,17 @@ const NotificationPage = () => {
     setTimeout(() => navigate(-1), 280);
   };
 
-  const handleCardClick = (id: number, contentId: number, title: string) => {
+  const isPointNotification = (keyword: string, title: string) =>
+    keyword.includes('포인트') || title.includes('포인트');
+
+  const handleCardClick = (id: number, contentId: number, title: string, keyword: string, url: string) => {
     if (didSwipeRef.current[id]) return;
     markAsRead(id);
-    navigate('/analysis/trust', { state: { contentId: String(contentId), title } });
+    if (isPointNotification(keyword, title)) {
+      navigate('/profile/shop');
+    } else {
+      navigate('/analysis/trust', { state: { contentId: String(contentId), title, url } });
+    }
   };
 
   const handleTouchStart = (id: number, e: React.TouchEvent) => {
@@ -177,7 +184,7 @@ const NotificationPage = () => {
                     )}
 
                     <button
-                      onClick={() => handleCardClick(item.id, item.contentId, item.title)}
+                      onClick={() => handleCardClick(item.id, item.contentId, item.title, item.keyword, item.url)}
                       className="w-full text-left px-5 py-4 flex items-start gap-3 active:bg-[#f8f8f8] transition-colors"
                     >
                       {/* 아이콘 */}

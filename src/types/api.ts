@@ -151,6 +151,7 @@ export interface ContentRelatedArticle {
 }
 
 export interface ContentAnalysisResponse {
+  contentId: number;
   url: string;
   totalScore: number;
   verdict: string;
@@ -162,6 +163,7 @@ export interface ContentAnalysisResponse {
   transparency: AnalysisSection;
   factChecks: FactCheckItem[];
   relatedArticles: ContentRelatedArticle[];
+  stocks: StockAnalysisResponse[];
 }
 
 // ── 콘텐츠 제출 (POST /api/contents/submit) ──────────────────────────────────
@@ -213,4 +215,45 @@ export interface UserProfile {
   name: string;
   color: string;
   points: number;
+}
+
+// ── 주식 기술적 분석 ──────────────────────────────────────────────────────────
+export interface StockAnalysisResponse {
+  code: string;
+  name: string;
+  market: string;
+  currentPrice: number;
+  priceChange: number;
+  priceChangeRate: number;
+  indicators?: {
+    ma5: number;
+    ma20: number;
+    ma60?: number;
+    ma120?: number;
+    rsi: number;
+    macd: number;
+    macdSignal: number;
+    macdHistogram: number;
+    bollingerUpper: number;
+    bollingerMiddle: number;
+    bollingerLower: number;
+    adx: number;
+  };
+  signals?: {
+    trend: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
+    goldenCross: boolean;
+    deadCross: boolean;
+    rsiSignal: 'OVERBOUGHT' | 'OVERSOLD' | 'NEUTRAL';
+    macdSignal: 'BUY' | 'SELL' | 'NEUTRAL';
+    bollingerSignal: 'UPPER' | 'MIDDLE' | 'LOWER';
+    volumeSpike: boolean;
+    adxStrength: 'VERY_STRONG' | 'STRONG' | 'MODERATE' | 'WEAK';
+  };
+  fibonacci?: {
+    support: number;
+    resistance: number;
+  };
+  overallScore: number;
+  recommendation: 'BUY' | 'WATCH' | 'SELL';
+  summary: string;
 }

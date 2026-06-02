@@ -5,7 +5,6 @@ import { analysisService } from "../../services/analysis";
 import { useMascotConfig } from "../../hooks/useMascotConfig";
 import { ApiError } from "../../services/client";
 import type { CritiqueItem, ContentAnalysisResponse } from "../../types/api";
-import { extractStocks, getNaverFinanceUrl } from "../../utils/stockKeywords";
 
 interface LocationState {
   contentId?: string;
@@ -43,8 +42,6 @@ const AnalysisResultPage = () => {
   const location = useLocation();
   const { contentId, title, submitResult } = (location.state as LocationState) ?? {};
 
-  const relatedStocks = useMemo(() => extractStocks(title ?? ""), [title]);
-
   const mascotConfig = useMascotConfig();
   const [critiques, setCritiques] = useState<CritiqueItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -78,7 +75,7 @@ const AnalysisResultPage = () => {
 
   const handleNext = () => {
     if (submitResult) {
-      navigate("/analysis/trust", { state: { submitResult, title } });
+      navigate("/analysis/trust", { state: { submitResult, title, contentId } });
     } else {
       navigate("/analysis/trust", { state: { contentId, title } });
     }
@@ -164,45 +161,6 @@ const AnalysisResultPage = () => {
           </button>
         </div>
 
-        {/* 관련 종목 */}
-        {relatedStocks.length > 0 && (
-          <div className="mt-4 bg-white rounded-[16px] p-5 shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_3px_rgba(0,0,0,0.1)]">
-            <p className="text-[16px] font-semibold text-[#1A1A1A] mb-3">관련 종목</p>
-            <div className="flex flex-col gap-2">
-              {relatedStocks.map((stock) => (
-                <a
-                  key={stock.code}
-                  href={getNaverFinanceUrl(stock.code)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between bg-[#F8F9FA] rounded-[10px] px-4 py-3 active:opacity-70 transition-opacity"
-                >
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="w-[6px] h-[6px] rounded-full flex-shrink-0"
-                      style={{ backgroundColor: 'var(--color-primary)' }}
-                    />
-                    <span className="text-[15px] font-semibold text-[#1A1A1A]">{stock.name}</span>
-                    <span className="text-[12px] text-[#999] font-medium">{stock.code}</span>
-                    <span
-                      className="text-[11px] font-semibold px-1.5 py-0.5 rounded-full"
-                      style={{
-                        backgroundColor: 'var(--color-primary-bg)',
-                        color: 'var(--color-primary)',
-                      }}
-                    >
-                      {stock.market}
-                    </span>
-                  </div>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M9 18l6-6-6-6" stroke="#BBBBBB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </a>
-              ))}
-            </div>
-            <p className="text-[11px] text-[#BBBBBB] mt-3 text-center">네이버 금융에서 실시간 시세를 확인하세요</p>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -96,15 +96,21 @@ const AnalysisHistoryPage = () => {
               <button
                 key={item.id}
                 onClick={() => {
-                  if (!item.contentId) return;
-                  navigate("/analysis/trust", {
-                    state: {
-                      contentId: String(item.contentId),
-                      title: item.title,
-                    },
-                  });
+                  if (item.contentId) {
+                    navigate("/analysis/trust", {
+                      state: {
+                        contentId: String(item.contentId),
+                        title: item.title,
+                        url: item.url ?? undefined,
+                      },
+                    });
+                  } else if (item.url) {
+                    navigate("/analysis", {
+                      state: { url: item.url, autoStart: true },
+                    });
+                  }
                 }}
-                className={`bg-white rounded-2xl p-4 border border-[#F0F0F0] flex flex-col gap-2 text-left transition-colors w-full ${item.contentId ? "active:bg-[var(--color-primary-bg)] cursor-pointer" : "cursor-default opacity-60"}`}
+                className={`bg-white rounded-2xl p-4 border border-[#F0F0F0] flex flex-col gap-2 text-left transition-colors w-full ${item.contentId || item.url ? "active:bg-[var(--color-primary-bg)] cursor-pointer" : "cursor-default opacity-60"}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <p className="text-[14px] font-semibold text-[#1A1A1A] leading-snug line-clamp-2 flex-1">

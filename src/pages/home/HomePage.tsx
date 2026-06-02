@@ -192,9 +192,22 @@ const KeywordSection = ({
             </div>
           ))
         ) : news.length === 0 ? (
-          <p className="text-[13px] text-[#A8A8A8] text-center py-4">
-            관련 뉴스가 없습니다
-          </p>
+          <div className="relative">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className={`invisible flex items-center gap-3 px-4 py-3 ${i < 2 ? "border-b border-[#F0F0F0]" : ""}`}
+              >
+                <div className="flex flex-col gap-1.5 flex-1">
+                  <div className="h-3 rounded-full w-4/5" />
+                  <div className="h-2.5 rounded-full w-16" />
+                </div>
+              </div>
+            ))}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <p className="text-[13px] text-[#A8A8A8]">관련 뉴스가 없습니다</p>
+            </div>
+          </div>
         ) : (
           news.map((item, i) => (
             <button
