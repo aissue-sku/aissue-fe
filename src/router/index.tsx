@@ -16,6 +16,7 @@ import CharacterShopPage from "../pages/profile/CharacterShopPage";
 import KeywordManagePage from "../pages/profile/KeywordManagePage";
 import AnalysisHistoryPage from "../pages/profile/AnalysisHistoryPage";
 import GuidePage from "../pages/profile/GuidePage";
+import DailyQuizPage from "../pages/profile/DailyQuizPage";
 
 const router = createBrowserRouter([
   { path: "/", element: <SplashPage /> },
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
       { path: "/profile/keywords", element: <KeywordManagePage /> },
       { path: "/profile/history", element: <AnalysisHistoryPage /> },
       { path: "/profile/guide", element: <GuidePage /> },
+      { path: "/profile/daily-quiz", element: <DailyQuizPage /> },
     ],
   },
 ]);

@@ -602,6 +602,7 @@ const ProfilePage = () => {
           icon={<CoinIcon />}
           label="출석체크 하기"
           sublabel="매일 포인트를 받아보세요!"
+          onClick={() => navigate("/profile/daily-quiz")}
         />
         <MenuItem
           icon={<StoreIcon />}

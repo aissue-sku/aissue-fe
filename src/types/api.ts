@@ -256,4 +256,27 @@ export interface StockAnalysisResponse {
   overallScore: number;
   recommendation: 'BUY' | 'WATCH' | 'SELL';
   summary: string;
+  keyPoints?: { type: 'positive' | 'warning' | 'negative' | 'neutral'; text: string }[];
+}
+
+// ── 일일 퀴즈 ─────────────────────────────────────────────────────────────────
+export interface DailyQuizArticle {
+  index: number;
+  title: string;
+  body: string;
+}
+
+export interface DailyQuizResponse {
+  quizId: number;
+  articles: DailyQuizArticle[];
+  alreadyAnswered: boolean;
+  myAnswer: number | null;
+  myAnswerCorrect: boolean;
+}
+
+export interface DailyQuizAnswerResponse {
+  correct: boolean;
+  fakeIndex: number;
+  pointsEarned: number;
+  explanation: string;
 }

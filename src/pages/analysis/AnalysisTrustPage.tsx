@@ -189,17 +189,20 @@ const AnalysisTrustPage = () => {
             {/* 관련 종목 기술적 분석 */}
             {relatedStocks.length > 0 && (
               <div className="bg-white px-5 py-5 flex flex-col gap-3">
-                <h3 className="text-[16px] font-semibold text-[#1A1A1A]">관련 종목 기술적 분석</h3>
+                <h3 className="text-[16px] font-semibold text-[#1A1A1A]">관련 종목 분석</h3>
                 <div className="flex flex-col gap-3">
                   {relatedStocks.map((stock) => {
                     const recColor = stock.recommendation === "BUY"
-                      ? { bg: "#E8F5E9", text: "#2E7D32" }
+                      ? { bg: "#E8F5E9", text: "#2E7D32", accent: "#4CAF50" }
                       : stock.recommendation === "SELL"
-                      ? { bg: "#FFEBEE", text: "#C62828" }
-                      : { bg: "#FFF8E1", text: "#F57F17" };
+                      ? { bg: "#FFEBEE", text: "#C62828", accent: "#EF5350" }
+                      : { bg: "#FFF8E1", text: "#E65100", accent: "#FFA726" };
                     const recLabel = stock.recommendation === "BUY" ? "매수" : stock.recommendation === "SELL" ? "매도" : "관망";
                     const changeSign = (stock.priceChange ?? 0) >= 0 ? "+" : "";
-                    const changeColor = (stock.priceChange ?? 0) >= 0 ? "#C62828" : "#1565C0";
+                    const isUp = (stock.priceChange ?? 0) >= 0;
+                    const changeColor = isUp ? "#E03030" : "#1565C0";
+                    const adxLabel = stock.signals?.adxStrength === "VERY_STRONG" || stock.signals?.adxStrength === "STRONG" ? "강" : stock.signals?.adxStrength === "MODERATE" ? "중" : "약";
+                    const macdLabel = stock.signals?.macdSignal === "BUY" ? "매수" : stock.signals?.macdSignal === "SELL" ? "매도" : "중립";
 
                     return (
                       <a
@@ -207,81 +210,114 @@ const AnalysisTrustPage = () => {
                         href={`https://finance.naver.com/item/main.naver?code=${stock.code}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex flex-col gap-3 bg-[#F8F9FA] rounded-[12px] px-4 py-4 active:opacity-70 transition-opacity"
+                        className="flex flex-col rounded-[14px] overflow-hidden border border-[#F0F0F0] active:opacity-70 transition-opacity"
+                        style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
                       >
-                        {/* 종목명 + 추천 뱃지 */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <span className="text-[15px] font-semibold text-[#1A1A1A]">{stock.name}</span>
-                            <span className="text-[11px] text-[#999]">{stock.code}</span>
-                            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full" style={{ backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }}>
-                              {stock.market}
+                        {/* 상단 컬러 액센트 바 */}
+                        <div className="h-1 w-full" style={{ backgroundColor: recColor.accent }} />
+
+                        <div className="flex flex-col gap-3 px-4 py-4">
+                          {/* 종목명 행 */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[16px] font-bold text-[#1A1A1A]">{stock.name}</span>
+                              <span className="text-[11px] text-[#AAAAAA] font-medium">{stock.code}</span>
+                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }}>
+                                {stock.market}
+                              </span>
+                            </div>
+                            <span className="text-[13px] font-bold px-3 py-1 rounded-full" style={{ backgroundColor: recColor.bg, color: recColor.text }}>
+                              {recLabel}
                             </span>
                           </div>
-                          <span className="text-[12px] font-bold px-2.5 py-1 rounded-full" style={{ backgroundColor: recColor.bg, color: recColor.text }}>
-                            {recLabel}
-                          </span>
-                        </div>
 
-                        {/* 현재가 + 등락 */}
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-[20px] font-bold text-[#1A1A1A]">
-                            {(stock.currentPrice ?? 0).toLocaleString()}원
-                          </span>
-                          <span className="text-[13px] font-medium" style={{ color: changeColor }}>
-                            {changeSign}{(stock.priceChange ?? 0).toLocaleString()}원 ({changeSign}{stock.priceChangeRate?.toFixed(2)}%)
-                          </span>
-                        </div>
+                          {/* 현재가 */}
+                          <div className="flex items-end gap-2">
+                            <span className="text-[22px] font-bold text-[#1A1A1A] leading-none">
+                              {(stock.currentPrice ?? 0).toLocaleString()}원
+                            </span>
+                            <span className="text-[13px] font-semibold pb-0.5" style={{ color: changeColor }}>
+                              {changeSign}{(stock.priceChange ?? 0).toLocaleString()}원&nbsp;({changeSign}{stock.priceChangeRate?.toFixed(2)}%)
+                            </span>
+                          </div>
 
-                        {/* 핵심 지표 */}
-                        {stock.indicators && (
-                          <div className="grid grid-cols-3 gap-2">
-                            {[
-                              { label: "RSI", value: stock.indicators.rsi?.toFixed(1) },
-                              { label: "MACD", value: stock.signals?.macdSignal === "BUY" ? "매수↑" : stock.signals?.macdSignal === "SELL" ? "매도↓" : "중립" },
-                              { label: "ADX", value: `${stock.indicators.adx?.toFixed(1)} (${stock.signals?.adxStrength === "VERY_STRONG" ? "강" : stock.signals?.adxStrength === "STRONG" ? "강" : stock.signals?.adxStrength === "MODERATE" ? "중" : "약"})` },
-                            ].map(({ label, value }) => (
-                              <div key={label} className="bg-white rounded-[8px] px-3 py-2 flex flex-col gap-0.5">
-                                <span className="text-[10px] text-[#999]">{label}</span>
-                                <span className="text-[13px] font-semibold text-[#1A1A1A]">{value}</span>
+                          {/* 투자 점수 */}
+                          <div className="flex items-center gap-3">
+                            <span className="text-[12px] text-[#999] shrink-0">투자 점수</span>
+                            <div className="flex-1 h-2 bg-[#F0F0F0] rounded-full overflow-hidden">
+                              <div
+                                className="h-full rounded-full"
+                                style={{ width: `${stock.overallScore}%`, backgroundColor: recColor.accent, transition: "width 0.8s cubic-bezier(0.4,0,0.2,1)" }}
+                              />
+                            </div>
+                            <span className="text-[14px] font-bold w-6 text-right" style={{ color: recColor.text }}>{stock.overallScore}</span>
+                          </div>
+
+                          <div className="border-t border-[#F5F5F5]" />
+
+                          {/* 핵심 지표 */}
+                          {stock.indicators && (
+                            <div className="grid grid-cols-3 gap-2">
+                              {[
+                                { label: "RSI", value: stock.indicators.rsi?.toFixed(1), sub: stock.signals?.rsiSignal === "OVERBOUGHT" ? "과매수" : stock.signals?.rsiSignal === "OVERSOLD" ? "과매도" : "중립" },
+                                { label: "MACD", value: macdLabel, sub: stock.signals?.trend === "BULLISH" ? "상승세" : stock.signals?.trend === "BEARISH" ? "하락세" : "중립" },
+                                { label: "ADX", value: stock.indicators.adx?.toFixed(1), sub: `추세 ${adxLabel}` },
+                              ].map(({ label, value, sub }) => (
+                                <div key={label} className="bg-[#F8F9FA] rounded-[10px] px-3 py-2.5 flex flex-col gap-0.5">
+                                  <span className="text-[10px] text-[#AAAAAA] font-medium">{label}</span>
+                                  <span className="text-[14px] font-bold text-[#1A1A1A]">{value}</span>
+                                  <span className="text-[10px] text-[#888]">{sub}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* 지지/저항 */}
+                          {stock.fibonacci && (
+                            <div className="flex gap-2">
+                              <div className="flex-1 flex items-center justify-between bg-blue-50 rounded-[10px] px-3 py-2.5">
+                                <span className="text-[11px] text-blue-400 font-medium">지지선</span>
+                                <span className="text-[13px] font-bold text-blue-700">{(stock.fibonacci.support ?? 0).toLocaleString()}원</span>
                               </div>
-                            ))}
-                          </div>
-                        )}
-
-                        {/* 피보나치 지지/저항 */}
-                        {stock.fibonacci && (
-                          <div className="flex gap-2">
-                            <div className="flex-1 bg-blue-50 rounded-[8px] px-3 py-2">
-                              <p className="text-[10px] text-blue-400">지지선</p>
-                              <p className="text-[13px] font-semibold text-blue-700">{(stock.fibonacci.support ?? 0).toLocaleString()}원</p>
+                              <div className="flex-1 flex items-center justify-between bg-red-50 rounded-[10px] px-3 py-2.5">
+                                <span className="text-[11px] text-red-400 font-medium">저항선</span>
+                                <span className="text-[13px] font-bold text-red-700">{(stock.fibonacci.resistance ?? 0).toLocaleString()}원</span>
+                              </div>
                             </div>
-                            <div className="flex-1 bg-red-50 rounded-[8px] px-3 py-2">
-                              <p className="text-[10px] text-red-400">저항선</p>
-                              <p className="text-[13px] font-semibold text-red-700">{(stock.fibonacci.resistance ?? 0).toLocaleString()}원</p>
+                          )}
+
+                          {/* 핵심 포인트 */}
+                          {stock.keyPoints && stock.keyPoints.length > 0 ? (
+                            <div className="flex flex-col gap-1.5">
+                              {stock.keyPoints.map((point, i) => {
+                                const pointStyle =
+                                  point.type === "positive" ? { dot: "#4CAF50", bg: "#F1F8F1", text: "#2E6B2E" }
+                                  : point.type === "negative" ? { dot: "#EF5350", bg: "#FFF1F1", text: "#962020" }
+                                  : point.type === "warning"  ? { dot: "#FFA726", bg: "#FFF8EE", text: "#8A4B00" }
+                                  : { dot: "#AAAAAA", bg: "#F5F5F5", text: "#555555" };
+                                return (
+                                  <div key={i} className="flex items-start gap-2 rounded-[8px] px-3 py-2" style={{ backgroundColor: pointStyle.bg }}>
+                                    <span className="mt-[5px] w-[6px] h-[6px] rounded-full shrink-0" style={{ backgroundColor: pointStyle.dot }} />
+                                    <p className="text-[12px] leading-[1.7]" style={{ color: pointStyle.text }}>{point.text}</p>
+                                  </div>
+                                );
+                              })}
                             </div>
-                          </div>
-                        )}
-
-                        {/* 종합 의견 */}
-                        <p className="text-[12px] text-[#666] leading-[1.6]">{stock.summary}</p>
-
-                        {/* 종합 점수 바 */}
-                        <div className="flex items-center gap-2">
-                          <span className="text-[11px] text-[#999] w-14 shrink-0">투자 점수</span>
-                          <div className="flex-1 h-1.5 bg-[#E5E5E5] rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all duration-700"
-                              style={{ width: `${stock.overallScore}%`, backgroundColor: recColor.text }}
-                            />
-                          </div>
-                          <span className="text-[12px] font-bold w-8 text-right" style={{ color: recColor.text }}>{stock.overallScore}</span>
+                          ) : (
+                            <p className="text-[12px] text-[#666] leading-[1.7]">{stock.summary}</p>
+                          )}
                         </div>
                       </a>
                     );
                   })}
                 </div>
-                <p className="text-[11px] text-[#BBBBBB] text-center">종목을 탭하면 네이버 금융에서 실시간 시세를 확인할 수 있습니다</p>
+                <p className="text-[11px] text-[#BBBBBB] text-center">종목을 탭하면 네이버 금융에서 확인할 수 있어요</p>
+                <div className="bg-[#F8F8F8] rounded-[10px] px-4 py-3">
+                  <p className="text-[11px] text-[#AAAAAA] leading-[1.7] text-center">
+                    본 분석은 투자 참고용 정보이며, 투자 권유가 아닙니다.<br />
+                    모든 투자 판단과 그에 따른 손익은 투자자 본인에게 있습니다.
+                  </p>
+                </div>
               </div>
             )}
 
