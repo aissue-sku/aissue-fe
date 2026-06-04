@@ -82,7 +82,7 @@ const AnalysisResultPage = () => {
   };
 
   return (
-    <div className="h-full overflow-hidden bg-[#FBFBFB] flex flex-col animate-slide-in">
+    <div className="h-full w-full overflow-hidden bg-[#FBFBFB] flex flex-col animate-slide-in">
       <div className="flex-1 overflow-y-auto px-5 pt-8 pb-4">
         {/* 마스코트 */}
         <div className="flex flex-col items-center mb-6">

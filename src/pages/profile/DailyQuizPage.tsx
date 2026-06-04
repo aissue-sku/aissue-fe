@@ -112,7 +112,7 @@ const DailyQuizPage = () => {
   };
 
   return (
-    <div className={`flex flex-col min-h-full bg-[#FBFBFB] ${isExiting ? "animate-slide-out" : "animate-slide-in"}`}>
+    <div className={`flex flex-col min-h-full w-full overflow-x-hidden bg-[#FBFBFB] ${isExiting ? "animate-slide-out" : "animate-slide-in"}`}>
       {/* 헤더 */}
       <header className="fixed top-6 left-0 right-0 z-10 h-16 flex items-end justify-center px-5 pb-3 bg-transparent">
         <button

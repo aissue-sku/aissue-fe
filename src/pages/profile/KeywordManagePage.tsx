@@ -98,7 +98,7 @@ const KeywordManagePage = () => {
   };
 
   return (
-    <div className="h-full overflow-hidden flex flex-col bg-[#f5f5f5] animate-slide-in">
+    <div className="h-full w-full overflow-hidden flex flex-col bg-[#f5f5f5] animate-slide-in">
       {/* 헤더 */}
       <header className="bg-white border-b border-[#f0f0f0] h-18 flex items-center justify-center px-5 shrink-0 relative">
         <button

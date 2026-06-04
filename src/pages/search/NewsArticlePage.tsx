@@ -28,7 +28,7 @@ const NewsArticlePage = () => {
   };
 
   return (
-    <div className="h-full overflow-hidden bg-white flex flex-col animate-slide-in">
+    <div className="h-full w-full overflow-hidden bg-white flex flex-col animate-slide-in">
       {/* 헤더 */}
       <div className="h-14 flex items-center px-5 bg-white relative pt-5 flex-shrink-0">
         <button

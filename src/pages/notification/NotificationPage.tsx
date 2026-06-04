@@ -72,7 +72,7 @@ const NotificationPage = () => {
 
   return (
     <div
-      className={`h-full overflow-hidden flex flex-col bg-[#f5f5f5] ${
+      className={`h-full w-full overflow-hidden flex flex-col bg-[#f5f5f5] ${
         isExiting ? 'animate-slide-out' : 'animate-slide-in'
       }`}
     >

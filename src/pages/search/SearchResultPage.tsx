@@ -71,7 +71,7 @@ const SearchResultPage = () => {
 
   return (
     <div
-      className={`min-h-full bg-white ${isExiting ? "animate-slide-out" : "animate-slide-in"}`}
+      className={`min-h-full w-full overflow-x-hidden bg-white ${isExiting ? "animate-slide-out" : "animate-slide-in"}`}
     >
       {/* 헤더 */}
       <div className="h-14 flex items-center px-5 bg-white relative pt-5">

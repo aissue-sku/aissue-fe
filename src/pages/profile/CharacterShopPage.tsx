@@ -622,7 +622,7 @@ const CharacterShopPage = () => {
           document.body,
         )}
       <div
-        className={`flex flex-col min-h-full ${isExiting ? "animate-slide-out" : "animate-slide-in"}`}
+        className={`flex flex-col min-h-full w-full overflow-x-hidden ${isExiting ? "animate-slide-out" : "animate-slide-in"}`}
         style={{
           background: "linear-gradient(to bottom, #FBFBFB 55%, #E1F3FF 100%)",
         }}

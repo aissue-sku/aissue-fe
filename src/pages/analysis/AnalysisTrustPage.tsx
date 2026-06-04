@@ -72,7 +72,7 @@ const AnalysisTrustPage = () => {
   };
 
   return (
-    <div className={`h-full overflow-hidden flex flex-col bg-[#FBFBFB] ${isExiting ? "animate-slide-out" : "animate-slide-in"}`}>
+    <div className={`h-full w-full overflow-hidden flex flex-col bg-[#FBFBFB] ${isExiting ? "animate-slide-out" : "animate-slide-in"}`}>
       {/* 헤더 */}
       <header className="bg-white border-b border-[#F5F5F5] h-18 flex items-center justify-center px-5 shrink-0">
         <button

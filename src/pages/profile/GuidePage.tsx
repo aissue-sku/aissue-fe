@@ -220,7 +220,7 @@ const GuidePage = () => {
 
   return (
     <div
-      className={`h-full flex flex-col bg-white ${exiting ? "animate-slide-out" : "animate-slide-in"}`}
+      className={`h-full w-full overflow-x-hidden flex flex-col bg-white ${exiting ? "animate-slide-out" : "animate-slide-in"}`}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >

@@ -46,7 +46,7 @@ const AnalysisHistoryPage = () => {
   }, []);
 
   return (
-    <div className="h-full flex flex-col bg-[#FBFBFB] animate-slide-in">
+    <div className="h-full w-full overflow-x-hidden flex flex-col bg-[#FBFBFB] animate-slide-in">
       {/* 헤더 */}
       <header className="bg-white border-b border-[#F5F5F5] h-18 flex items-center justify-center px-5 shrink-0">
         <button
