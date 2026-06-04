@@ -4,6 +4,7 @@ import { quizService } from "../../services/quiz";
 import { ApiError } from "../../services/client";
 import { useMascotConfig } from "../../hooks/useMascotConfig";
 import mascotHand from "../../assets/mascot-hand.png";
+import QuizResultModal from "../../components/common/QuizResultModal";
 import type { DailyQuizResponse } from "../../types/api";
 
 type Phase = "loading" | "error" | "quiz" | "result" | "done";
@@ -23,6 +24,7 @@ const DailyQuizPage = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+  const [showResultModal, setShowResultModal] = useState(false);
 
   // 결과
   const [correct, setCorrect] = useState(false);
@@ -83,6 +85,7 @@ const DailyQuizPage = () => {
       setExplanation(res.explanation);
       if (quiz) saveCachedResult(quiz.quizId, res.explanation, res.fakeIndex);
       setPhase("result");
+      setShowResultModal(true);
     } catch (e) {
       if (e instanceof ApiError && e.status === 409) {
         // 이미 제출한 경우 — 퀴즈 재조회 후 캐시된 해설 복원
@@ -279,8 +282,8 @@ const DailyQuizPage = () => {
 
         {/* 해설 */}
         {(phase === "result" || phase === "done") && explanation && (
-          <div className="bg-[#F8F9FA] rounded-[12px] px-4 py-4 flex flex-col gap-1.5">
-            <p className="text-[12px] font-semibold text-[#555]">해설</p>
+          <div className="bg-[var(--color-primary-bg)] rounded-[12px] px-4 py-4 flex flex-col gap-1.5">
+            <p className="text-[12px] font-semibold" style={{ color: 'var(--color-primary)' }}>해설</p>
             <p className="text-[13px] text-[#444] leading-[1.7]">{explanation}</p>
           </div>
         )}
@@ -308,6 +311,15 @@ const DailyQuizPage = () => {
             확인
           </button>
         </div>
+      )}
+
+      {showResultModal && fakeIndex !== null && (
+        <QuizResultModal
+          correct={correct}
+          pointsEarned={pointsEarned}
+          fakeIndex={fakeIndex}
+          onClose={() => setShowResultModal(false)}
+        />
       )}
     </div>
   );
