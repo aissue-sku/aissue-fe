@@ -28,6 +28,16 @@ export const markAttendance = (dateKey: string = getTodayDateKey()): void => {
   }
 };
 
+export const unmarkAttendance = (dateKey: string = getTodayDateKey()): void => {
+  const list = getAttendance();
+  const next = list.filter((d) => d !== dateKey);
+  if (next.length !== list.length) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(next));
+    } catch {}
+  }
+};
+
 // 이번 주(월~일) 날짜 7개 반환
 export const getThisWeekDates = (): Date[] => {
   const today = new Date();

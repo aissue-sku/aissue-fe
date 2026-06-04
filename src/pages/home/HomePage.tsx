@@ -21,6 +21,7 @@ import {
   getThisWeekDates,
   getTodayDateKey,
   markAttendance,
+  unmarkAttendance,
 } from "../../utils/attendance";
 
 // ── 키워드 뉴스 섹션 ────────────────────────────────────────────────────────
@@ -272,8 +273,10 @@ const AttendanceSection = () => {
         setAnswered(data.alreadyAnswered);
         if (data.alreadyAnswered) {
           markAttendance();
-          setAttendance(getAttendance());
+        } else {
+          unmarkAttendance();
         }
+        setAttendance(getAttendance());
       })
       .catch(() => setAnswered(false));
   }, []);

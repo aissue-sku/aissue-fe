@@ -5,7 +5,7 @@ import { ApiError } from "../../services/client";
 import { useMascotConfig } from "../../hooks/useMascotConfig";
 import mascotHand from "../../assets/mascot-hand.png";
 import QuizResultModal from "../../components/common/QuizResultModal";
-import { markAttendance } from "../../utils/attendance";
+import { markAttendance, unmarkAttendance } from "../../utils/attendance";
 import type { DailyQuizResponse } from "../../types/api";
 
 type Phase = "loading" | "error" | "quiz" | "result" | "done";
@@ -65,6 +65,7 @@ const DailyQuizPage = () => {
           markAttendance();
           setPhase("done");
         } else {
+          unmarkAttendance();
           setPhase("quiz");
         }
       })
