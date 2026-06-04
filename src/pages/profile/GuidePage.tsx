@@ -1,26 +1,85 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import homeBlueIcon from "../../assets/home-blue.svg";
+import graphBlueIcon from "../../assets/graph-blue.svg";
+import profileBlueIcon from "../../assets/profile-blue.svg";
+import searchBlueIcon from "../../assets/search-blue.svg";
+import mascot from "../../assets/mascot.png";
+import mascotHat1 from "../../assets/mascot-hat1.png";
+import mascotHat3 from "../../assets/mascot-hat3.png";
+import mascotSuit from "../../assets/mascot-suit.png";
+import mascotPajama from "../../assets/mascot-pajama.png";
 
-const STEPS = [
+type TabKey = "home" | "analysis" | "search" | "profile";
+
+const TAB_META: Record<TabKey, { label: string; icon: string }> = {
+  home: { label: "홈 탭", icon: homeBlueIcon },
+  analysis: { label: "분석 탭", icon: graphBlueIcon },
+  search: { label: "검색 탭", icon: searchBlueIcon },
+  profile: { label: "프로필 탭", icon: profileBlueIcon },
+};
+
+const TabBadge = ({ tab }: { tab: TabKey }) => {
+  const meta = TAB_META[tab];
+  return (
+    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[var(--color-primary-border)] shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <img
+        src={meta.icon}
+        alt=""
+        className="w-4 h-4"
+        style={{ filter: "var(--color-primary-filter)" }}
+      />
+      <span
+        className="text-[11px] font-bold tracking-[-0.2px]"
+        style={{ color: "var(--color-primary)" }}
+      >
+        {meta.label}
+      </span>
+    </div>
+  );
+};
+
+const STEPS: {
+  title: string;
+  desc: string;
+  illustration: React.ReactNode;
+  tabs: TabKey[];
+}[] = [
   {
     title: "홈에서 뉴스 카드 확인",
     desc: "카드를 좌우로 스와이프하면\n오늘의 주요 이슈를 확인할 수 있어요.",
     illustration: <StepCard1 />,
+    tabs: ["home"],
   },
   {
     title: "카드 탭으로 신뢰도 분석",
     desc: "카드를 탭하면 AI가 해당 기사의\n신뢰도를 자동으로 분석해 드려요.",
     illustration: <StepCard2 />,
+    tabs: ["home", "analysis"],
   },
   {
     title: "URL로 직접 분석하기",
     desc: "분석 탭에서 기사 URL을 붙여넣으면\n어떤 기사든 신뢰도를 확인할 수 있어요.",
     illustration: <StepCard3 />,
+    tabs: ["analysis"],
   },
   {
     title: "키워드 구독으로 맞춤 뉴스",
     desc: "관심 키워드를 구독하면\n관련 최신 뉴스를 홈에서 바로 확인해요.",
     illustration: <StepCard4 />,
+    tabs: ["home"],
+  },
+  {
+    title: "매일 출석체크 퀴즈",
+    desc: "매일 가짜 기사 찾기 퀴즈를 풀면\n포인트를 모으며 출석을 채울 수 있어요.",
+    illustration: <StepCard5 />,
+    tabs: ["home"],
+  },
+  {
+    title: "캐릭터 상점에서 꾸미기",
+    desc: "모은 포인트로 모자와 옷을 구매해\n나만의 마스코트로 꾸며보세요.",
+    illustration: <StepCard6 />,
+    tabs: ["profile"],
   },
 ];
 
@@ -131,6 +190,169 @@ function StepCard3() {
           <div className="h-2.5 bg-[#D0E8FF] rounded-full w-20" />
           <div className="h-2 bg-gray-200 rounded-full w-28" />
         </div>
+      </div>
+    </div>
+  );
+}
+
+function StepCard5() {
+  const labels = ["월", "화", "수", "목", "금", "토", "일"];
+  // 5칸 체크 + 오늘(6번째) 강조
+  return (
+    <div className="relative w-full flex flex-col items-center justify-center h-full gap-4">
+      <div className="w-[260px] bg-white border border-[var(--color-primary-border)] rounded-2xl p-4 flex flex-col gap-3 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+        <div className="flex items-center justify-between">
+          <p className="text-[12px] font-semibold text-[#1A1A1A]">이번 주 출석</p>
+          <p
+            className="text-[11px] font-bold"
+            style={{ color: "var(--color-primary)" }}
+          >
+            5/7
+          </p>
+        </div>
+        <div className="grid grid-cols-7 gap-1">
+          {labels.map((label, i) => {
+            const checked = i < 5;
+            const isToday = i === 5;
+            return (
+              <div key={label} className="flex flex-col items-center gap-1">
+                <span
+                  className={`text-[10px] font-medium ${
+                    isToday ? "" : "text-[#A8A8A8]"
+                  }`}
+                  style={isToday ? { color: "var(--color-primary)" } : undefined}
+                >
+                  {label}
+                </span>
+                <div
+                  className="w-7 h-7 rounded-full flex items-center justify-center"
+                  style={{
+                    backgroundColor: checked
+                      ? "var(--color-primary)"
+                      : "#EFEFEF",
+                    border:
+                      isToday && !checked
+                        ? `1.5px solid var(--color-primary)`
+                        : "none",
+                    animation: checked
+                      ? `card-enter 380ms cubic-bezier(0.34,1.56,0.64,1) ${
+                          80 + i * 90
+                        }ms both`
+                      : undefined,
+                  }}
+                >
+                  {checked && (
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M5 12l5 5 9-11"
+                        stroke="white"
+                        strokeWidth="2.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      {/* 포인트 획득 뱃지 */}
+      <div
+        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full animate-btn-pulse"
+        style={{ backgroundColor: "var(--color-primary-bg)" }}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <circle
+            cx="12"
+            cy="12"
+            r="9"
+            style={{ stroke: "var(--color-primary)" }}
+            strokeWidth="2"
+          />
+          <path
+            d="M9 12h6M12 9v6"
+            style={{ stroke: "var(--color-primary)" }}
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        </svg>
+        <span
+          className="text-[12px] font-bold"
+          style={{ color: "var(--color-primary)" }}
+        >
+          +10P 획득
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function StepCard6() {
+  const items = [mascotHat1, mascotHat3, mascotSuit, mascotPajama];
+  return (
+    <div className="relative w-full flex flex-col items-center justify-center h-full gap-3">
+      {/* 캐릭터 카드 */}
+      <div className="relative w-[160px] h-[170px] rounded-2xl overflow-hidden border border-[var(--color-primary-border)]">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to bottom, var(--color-primary-bg), white)",
+          }}
+        />
+        <div className="absolute inset-0 flex items-end justify-center pb-4">
+          <div className="relative w-24">
+            <img
+              src={mascot}
+              alt=""
+              className="relative w-full h-auto object-contain"
+              style={{ filter: "var(--color-primary-filter)" }}
+            />
+            <img
+              src={mascotHat1}
+              alt=""
+              className="absolute top-0 left-0 w-full h-auto animate-fade-up"
+            />
+          </div>
+        </div>
+        {/* 가격 칩 */}
+        <div className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 rounded-full bg-white shadow-sm">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+            <circle
+              cx="12"
+              cy="12"
+              r="9"
+              style={{ stroke: "var(--color-primary)" }}
+              strokeWidth="2"
+            />
+          </svg>
+          <span
+            className="text-[10px] font-bold"
+            style={{ color: "var(--color-primary)" }}
+          >
+            50P
+          </span>
+        </div>
+      </div>
+
+      {/* 아이템 슬롯 */}
+      <div className="grid grid-cols-4 gap-2">
+        {items.map((item, i) => (
+          <div
+            key={i}
+            className="w-12 h-12 rounded-xl bg-white border border-[#E5E5E5] flex items-center justify-center overflow-hidden"
+            style={{
+              animation: `card-enter 400ms cubic-bezier(0.34,1.56,0.64,1) ${
+                i * 100
+              }ms both`,
+              borderColor: i === 0 ? "var(--color-primary)" : "#E5E5E5",
+            }}
+          >
+            <img src={item} alt="" className="w-11 h-11 object-contain" />
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -272,16 +494,28 @@ const GuidePage = () => {
 
       {/* 텍스트 + 버튼 */}
       <div className="shrink-0 px-6 pb-10 flex flex-col gap-6">
-        <div className="text-center flex flex-col gap-2" key={`text-${step}`}>
-          <h2 className="text-[22px] font-bold text-[#1A1A1A] animate-fade-up">
-            {STEPS[step].title}
-          </h2>
-          <p
-            className="text-[15px] text-[#8F8F8F] leading-[1.7] whitespace-pre-line animate-fade-up"
-            style={{ animationDelay: "60ms" }}
+        <div className="text-center flex flex-col items-center gap-3" key={`text-${step}`}>
+          <div
+            className="flex items-center justify-center gap-1.5 animate-fade-up"
           >
-            {STEPS[step].desc}
-          </p>
+            {STEPS[step].tabs.map((tab) => (
+              <TabBadge key={tab} tab={tab} />
+            ))}
+          </div>
+          <div className="flex flex-col gap-2">
+            <h2
+              className="text-[22px] font-bold text-[#1A1A1A] animate-fade-up"
+              style={{ animationDelay: "40ms" }}
+            >
+              {STEPS[step].title}
+            </h2>
+            <p
+              className="text-[15px] text-[#8F8F8F] leading-[1.7] whitespace-pre-line animate-fade-up"
+              style={{ animationDelay: "80ms" }}
+            >
+              {STEPS[step].desc}
+            </p>
+          </div>
         </div>
 
         <div className="flex gap-3">
@@ -297,7 +531,7 @@ const GuidePage = () => {
             onClick={() => {
               if (isLast) {
                 setExiting(true);
-                setTimeout(() => navigate("/analysis"), 280);
+                setTimeout(() => navigate("/home"), 280);
               } else {
                 goTo(step + 1);
               }
