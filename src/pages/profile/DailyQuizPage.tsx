@@ -30,6 +30,23 @@ const DailyQuizPage = () => {
   const [pointsEarned, setPointsEarned] = useState(0);
   const [explanation, setExplanation] = useState("");
 
+  const loadCachedResult = (quizId: number) => {
+    try {
+      const cached = localStorage.getItem(`aissue_quiz_${quizId}`);
+      if (cached) {
+        const { explanation: exp, fakeIndex: fi } = JSON.parse(cached);
+        if (exp) setExplanation(exp);
+        if (fi !== undefined) setFakeIndex(fi);
+      }
+    } catch {}
+  };
+
+  const saveCachedResult = (quizId: number, exp: string, fi: number) => {
+    try {
+      localStorage.setItem(`aissue_quiz_${quizId}`, JSON.stringify({ explanation: exp, fakeIndex: fi }));
+    } catch {}
+  };
+
   useEffect(() => {
     quizService
       .getDailyQuiz()
@@ -38,10 +55,10 @@ const DailyQuizPage = () => {
         if (data.alreadyAnswered) {
           setSelectedIndex(data.myAnswer);
           setCorrect(data.myAnswerCorrect);
-          // 정답인 경우 myAnswer가 fakeIndex와 동일
           if (data.myAnswerCorrect && data.myAnswer !== null) {
             setFakeIndex(data.myAnswer);
           }
+          loadCachedResult(data.quizId);
           setPhase("done");
         } else {
           setPhase("quiz");
@@ -64,15 +81,17 @@ const DailyQuizPage = () => {
       setFakeIndex(res.fakeIndex);
       setPointsEarned(res.pointsEarned);
       setExplanation(res.explanation);
+      if (quiz) saveCachedResult(quiz.quizId, res.explanation, res.fakeIndex);
       setPhase("result");
     } catch (e) {
       if (e instanceof ApiError && e.status === 409) {
-        // 이미 제출한 경우 — 퀴즈 재조회
+        // 이미 제출한 경우 — 퀴즈 재조회 후 캐시된 해설 복원
         quizService.getDailyQuiz().then((data) => {
           setQuiz(data);
           setSelectedIndex(data.myAnswer);
           setCorrect(data.myAnswerCorrect);
           if (data.myAnswerCorrect && data.myAnswer !== null) setFakeIndex(data.myAnswer);
+          loadCachedResult(data.quizId);
           setPhase("done");
         }).catch(() => {});
       }
@@ -259,7 +278,7 @@ const DailyQuizPage = () => {
         )}
 
         {/* 해설 */}
-        {phase === "result" && explanation && (
+        {(phase === "result" || phase === "done") && explanation && (
           <div className="bg-[#F8F9FA] rounded-[12px] px-4 py-4 flex flex-col gap-1.5">
             <p className="text-[12px] font-semibold text-[#555]">해설</p>
             <p className="text-[13px] text-[#444] leading-[1.7]">{explanation}</p>
