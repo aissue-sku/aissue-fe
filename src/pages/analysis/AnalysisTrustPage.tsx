@@ -186,6 +186,25 @@ const AnalysisTrustPage = () => {
               </div>
             )}
 
+            {/* 신뢰도가 높은 관련 기사 */}
+            {data.relatedArticles.length > 0 && (
+              <div className="bg-white px-5 py-5 flex flex-col gap-4 shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_3px_rgba(0,0,0,0.1)]">
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-[18px] font-semibold text-[var(--color-primary)]">
+                    신뢰도가 높은 관련 기사
+                  </h3>
+                  <p className="text-[14px] text-[#8F8F8F] leading-[1.6]">
+                    이 주제와 관련하여 신뢰도가 높은 다른 기사를 확인해보세요
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3">
+                  {data.relatedArticles.map((article) => (
+                    <RelatedArticleCard key={article.title} {...article} />
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* 관련 종목 기술적 분석 */}
             {relatedStocks.length > 0 && (
               <div className="bg-white px-5 py-5 flex flex-col gap-3">
@@ -321,24 +340,6 @@ const AnalysisTrustPage = () => {
               </div>
             )}
 
-            {/* 신뢰도가 높은 관련 기사 */}
-            {data.relatedArticles.length > 0 && (
-              <div className="bg-white px-5 py-5 flex flex-col gap-4 shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_3px_rgba(0,0,0,0.1)]">
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-[18px] font-semibold text-[var(--color-primary)]">
-                    신뢰도가 높은 관련 기사
-                  </h3>
-                  <p className="text-[14px] text-[#8F8F8F] leading-[1.6]">
-                    이 주제와 관련하여 신뢰도가 높은 다른 기사를 확인해보세요
-                  </p>
-                </div>
-                <div className="flex flex-col gap-3">
-                  {data.relatedArticles.map((article) => (
-                    <RelatedArticleCard key={article.title} {...article} />
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         );
       })()}
