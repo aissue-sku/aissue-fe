@@ -12,8 +12,16 @@ import {
   issueService,
   notificationService,
   keywordService,
+  quizService,
 } from "../../services";
 import { useMascotConfig } from "../../hooks/useMascotConfig";
+import {
+  getAttendance,
+  getDateKey,
+  getThisWeekDates,
+  getTodayDateKey,
+  markAttendance,
+} from "../../utils/attendance";
 
 // ── 키워드 뉴스 섹션 ────────────────────────────────────────────────────────
 const KeywordSection = ({
@@ -241,6 +249,124 @@ const KeywordSection = ({
             </button>
           ))
         )}
+      </div>
+    </div>
+  );
+};
+
+// ── 출석체크 유도 섹션 ──────────────────────────────────────────────────────
+const WEEK_LABELS = ["월", "화", "수", "목", "금", "토", "일"];
+
+const AttendanceSection = () => {
+  const navigate = useNavigate();
+  const [answered, setAnswered] = useState<boolean | null>(null);
+  const [attendance, setAttendance] = useState<string[]>(() => getAttendance());
+
+  const weekDates = useMemo(() => getThisWeekDates(), []);
+  const todayKey = useMemo(() => getTodayDateKey(), []);
+
+  useEffect(() => {
+    quizService
+      .getDailyQuiz()
+      .then((data) => {
+        setAnswered(data.alreadyAnswered);
+        if (data.alreadyAnswered) {
+          markAttendance();
+          setAttendance(getAttendance());
+        }
+      })
+      .catch(() => setAnswered(false));
+  }, []);
+
+  const checkedCount = weekDates.filter((d) =>
+    attendance.includes(getDateKey(d)),
+  ).length;
+
+  return (
+    <div className="px-5 pb-6">
+      <div className="bg-white border border-[var(--color-primary-border)] rounded-2xl p-4 flex flex-col gap-3.5">
+        <div className="flex items-center justify-between">
+          <p className="text-[14px] font-semibold text-[#1A1A1A]">이번 주 출석</p>
+          <p
+            className="text-[12px] font-bold"
+            style={{ color: "var(--color-primary)" }}
+          >
+            {checkedCount}/7
+          </p>
+        </div>
+
+        <div className="grid grid-cols-7 gap-1">
+          {weekDates.map((d, i) => {
+            const dateKey = getDateKey(d);
+            const isToday = dateKey === todayKey;
+            const isFuture = dateKey > todayKey;
+            const isChecked = attendance.includes(dateKey);
+
+            return (
+              <div key={dateKey} className="flex flex-col items-center gap-1.5">
+                <span
+                  className={`text-[11px] ${
+                    isToday
+                      ? "font-bold"
+                      : "font-medium text-[#A8A8A8]"
+                  }`}
+                  style={isToday ? { color: "var(--color-primary)" } : undefined}
+                >
+                  {WEEK_LABELS[i]}
+                </span>
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center"
+                  style={{
+                    backgroundColor: isChecked
+                      ? "var(--color-primary)"
+                      : isFuture
+                      ? "#F5F5F5"
+                      : "#EFEFEF",
+                    border:
+                      isToday && !isChecked
+                        ? `1.5px solid var(--color-primary)`
+                        : "none",
+                    opacity: isFuture && !isChecked ? 0.5 : 1,
+                  }}
+                >
+                  {isChecked ? (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M5 12l5 5 9-11"
+                        stroke="white"
+                        strokeWidth="2.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : (
+                    <span
+                      className="text-[11px] font-semibold"
+                      style={{
+                        color: isToday ? "var(--color-primary)" : "#C8C8C8",
+                      }}
+                    >
+                      {d.getDate()}
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <button
+          onClick={() => navigate("/profile/daily-quiz")}
+          disabled={answered === null}
+          className="w-full h-[44px] rounded-[10px] text-[14px] font-bold text-white active:opacity-80 transition-opacity disabled:opacity-50"
+          style={{ backgroundColor: "var(--color-primary)" }}
+        >
+          {answered === null
+            ? "불러오는 중..."
+            : answered
+            ? "오늘의 퀴즈 다시 보기"
+            : "오늘의 출석체크 시작"}
+        </button>
       </div>
     </div>
   );
@@ -605,13 +731,16 @@ const HomePage = () => {
       </div>
 
       {/* 키워드 뉴스 섹션 */}
-      <div className="mt-2 pb-6">
+      <div className="mt-2 pb-2">
         <KeywordSection
           onArticleClick={(url) =>
             navigate("/analysis", { state: { url, autoStart: true } })
           }
         />
       </div>
+
+      {/* 출석체크 유도 섹션 */}
+      <AttendanceSection />
     </div>
   );
 };

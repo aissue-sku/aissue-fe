@@ -7,4 +7,5 @@ export { keywordService } from './keywords';
 export { notificationService } from './notifications';
 export { analysisService } from './analysis';
 export { userService } from './user';
+export { quizService } from './quiz';
 export { tokenStorage, ApiError } from './client';
