@@ -216,7 +216,6 @@ const AnalysisTrustPage = () => {
                       : stock.recommendation === "SELL"
                       ? { bg: "#FFEBEE", text: "#C62828", accent: "#EF5350" }
                       : { bg: "#FFF8E1", text: "#E65100", accent: "#FFA726" };
-                    const recLabel = stock.recommendation === "BUY" ? "매수" : stock.recommendation === "SELL" ? "매도" : "관망";
                     const changeSign = (stock.priceChange ?? 0) >= 0 ? "+" : "";
                     const isUp = (stock.priceChange ?? 0) >= 0;
                     const changeColor = isUp ? "#E03030" : "#1565C0";
@@ -245,9 +244,6 @@ const AnalysisTrustPage = () => {
                                 {stock.market}
                               </span>
                             </div>
-                            <span className="text-[13px] font-bold px-3 py-1 rounded-full" style={{ backgroundColor: recColor.bg, color: recColor.text }}>
-                              {recLabel}
-                            </span>
                           </div>
 
                           {/* 현재가 */}
