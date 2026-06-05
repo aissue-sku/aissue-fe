@@ -715,14 +715,16 @@ const HomePage = () => {
                     active={isActive}
                     onClick={
                       isActive
-                        ? () =>
+                        ? () => {
+                            sessionStorage.setItem("navSource", "/home");
                             navigate("/analysis", {
                               state: {
                                 contentId: article.id,
                                 title: article.title,
                                 autoStart: true,
                               },
-                            })
+                            });
+                          }
                         : undefined
                     }
                   />
@@ -736,9 +738,10 @@ const HomePage = () => {
       {/* 키워드 뉴스 섹션 */}
       <div className="mt-2 pb-2">
         <KeywordSection
-          onArticleClick={(url) =>
-            navigate("/analysis", { state: { url, autoStart: true } })
-          }
+          onArticleClick={(url) => {
+            sessionStorage.setItem("navSource", "/home");
+            navigate("/analysis", { state: { url, autoStart: true } });
+          }}
         />
       </div>
 

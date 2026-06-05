@@ -15,18 +15,39 @@ const tabs = [
   { path: '/profile', icon: profileIcon, activeIcon: profileBlueIcon },
 ];
 
+const NAV_SOURCE_KEY = 'navSource';
+
+const resolveActiveTab = (pathname: string): string | null => {
+  if (pathname === '/notification' || pathname.startsWith('/home')) return '/home';
+  if (pathname.startsWith('/search')) return '/search';
+  if (pathname.startsWith('/profile')) return '/profile';
+  if (pathname.startsWith('/analysis')) {
+    if (typeof window !== 'undefined' && sessionStorage.getItem(NAV_SOURCE_KEY) === '/home') {
+      return '/home';
+    }
+    return '/analysis';
+  }
+  return null;
+};
+
 const BottomNav = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const activePath = resolveActiveTab(pathname);
+
+  const handleTabClick = (path: string) => {
+    sessionStorage.setItem(NAV_SOURCE_KEY, path);
+    navigate(path);
+  };
 
   return (
     <nav className="h-16 bg-white flex items-center justify-center gap-14 px-6 flex-shrink-0 rounded-tl-[30px] rounded-tr-[30px] shadow-[0_-2px_8px_rgba(0,0,0,0.04)]">
       {tabs.map(({ path, icon, activeIcon }) => {
-        const active = pathname === path;
+        const active = activePath === path;
         return (
           <button
             key={path}
-            onClick={() => navigate(path)}
+            onClick={() => handleTabClick(path)}
             className="flex items-center justify-center w-12 h-12 cursor-pointer"
           >
             <img

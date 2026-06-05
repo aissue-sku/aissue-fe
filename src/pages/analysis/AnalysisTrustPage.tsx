@@ -117,6 +117,8 @@ const AnalysisTrustPage = () => {
           { key: "transparency",      label: "투명성",      section: data.transparency },
         ];
 
+        const originalUrl = data.url || url;
+
         return (
           <div className="flex flex-col gap-4 pb-4">
             {/* 기사 제목 + 원형 신뢰도 그래프 */}
@@ -129,6 +131,25 @@ const AnalysisTrustPage = () => {
               <div className="flex justify-center py-2">
                 <CircularProgress percentage={data.totalScore} status={data.verdict} />
               </div>
+              {originalUrl && (
+                <a
+                  href={originalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1.5 w-full py-3 bg-[#F5F5F5] rounded-[10px] active:opacity-70 transition-opacity"
+                >
+                  <span className="text-[14px] font-semibold text-[#1A1A1A]">원문 보러가기</span>
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M3.5 12.5L12.5 3.5M12.5 3.5H6.5M12.5 3.5V9.5"
+                      stroke="#1A1A1A"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </a>
+              )}
             </div>
 
             {/* 항목별 점수 */}
