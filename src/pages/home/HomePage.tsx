@@ -24,6 +24,42 @@ import {
   unmarkAttendance,
 } from "../../utils/attendance";
 
+// ── 이슈 카드 캐시 ──────────────────────────────────────────────────────────
+const CARDS_CACHE_KEY = "home:cards:hourly";
+const CARDS_TTL_MS = 5 * 60 * 1000;
+
+const readCachedArticles = (): Article[] | null => {
+  try {
+    const raw = sessionStorage.getItem(CARDS_CACHE_KEY);
+    if (!raw) return null;
+    const { ts, data } = JSON.parse(raw) as { ts: number; data: Article[] };
+    if (Date.now() - ts > CARDS_TTL_MS) return null;
+    return data;
+  } catch {
+    return null;
+  }
+};
+
+const writeCachedArticles = (data: Article[]) => {
+  try {
+    sessionStorage.setItem(
+      CARDS_CACHE_KEY,
+      JSON.stringify({ ts: Date.now(), data }),
+    );
+  } catch {
+    // 용량 초과 등은 무시
+  }
+};
+
+const preloadImages = (urls: (string | null | undefined)[]) => {
+  urls.forEach((url) => {
+    if (!url) return;
+    const img = new Image();
+    img.decoding = "async";
+    img.src = url;
+  });
+};
+
 // ── 키워드 뉴스 섹션 ────────────────────────────────────────────────────────
 const KeywordSection = ({
   onArticleClick,
@@ -405,8 +441,12 @@ const HomePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [notificationCount, setNotificationCount] = useState(0);
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [articles, setArticles] = useState<Article[]>(
+    () => readCachedArticles() ?? [],
+  );
+  const [loading, setLoading] = useState<boolean>(
+    () => readCachedArticles() === null,
+  );
 
   useEffect(() => {
     const main = document.querySelector("main");
@@ -433,11 +473,19 @@ const HomePage = () => {
   }, [location.key]);
 
   useEffect(() => {
+    if (articles.length > 0) {
+      preloadImages(articles.map((a) => a.imageUrl));
+    }
     issueService
       .getCards("HOURLY")
-      .then(setArticles)
+      .then((fresh) => {
+        setArticles(fresh);
+        writeCachedArticles(fresh);
+        preloadImages(fresh.map((a) => a.imageUrl));
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const mascotConfig = useMascotConfig();

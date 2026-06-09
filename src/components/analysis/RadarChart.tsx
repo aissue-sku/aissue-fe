@@ -73,11 +73,10 @@ const RadarChart = ({ data, size = 260 }: Props) => {
 
       <polygon
         points={dataPoints}
-        fill="var(--color-primary)"
         fillOpacity={0.22}
-        stroke="var(--color-primary)"
         strokeWidth={2}
         strokeLinejoin="round"
+        style={{ fill: "var(--color-primary)", stroke: "var(--color-primary)" }}
       />
 
       {data.map((d, i) => {
@@ -89,7 +88,7 @@ const RadarChart = ({ data, size = 260 }: Props) => {
             cx={p.x}
             cy={p.y}
             r={3.5}
-            fill="var(--color-primary)"
+            style={{ fill: "var(--color-primary)" }}
           />
         );
       })}
