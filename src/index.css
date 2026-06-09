@@ -257,6 +257,20 @@ body {
   animation: slide-down-to-bottom 280ms cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
+@keyframes radar-spread {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* ── 가이드 페이지 애니메이션 ─────────────────────────────────────────────── */
 /* 가이드 캐러셀 — 5장, stride=124px, 총 4.5s 사이클
    card2(중앙) active → 슬라이드 → card3 active → 복귀 */

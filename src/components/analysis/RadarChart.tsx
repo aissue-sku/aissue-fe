@@ -45,7 +45,12 @@ const RadarChart = ({ data, size = 260 }: Props) => {
     .join(" ");
 
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      overflow="visible"
+    >
       {GRID_LEVELS.map((level) => (
         <polygon
           key={level}
@@ -71,27 +76,35 @@ const RadarChart = ({ data, size = 260 }: Props) => {
         );
       })}
 
-      <polygon
-        points={dataPoints}
-        fillOpacity={0.22}
-        strokeWidth={2}
-        strokeLinejoin="round"
-        style={{ fill: "var(--color-primary)", stroke: "var(--color-primary)" }}
-      />
+      <g
+        style={{
+          transformOrigin: `${center}px ${center}px`,
+          animation:
+            "radar-spread 720ms cubic-bezier(0.34, 1.56, 0.64, 1) both",
+        }}
+      >
+        <polygon
+          points={dataPoints}
+          fillOpacity={0.22}
+          strokeWidth={2}
+          strokeLinejoin="round"
+          style={{ fill: "var(--color-primary)", stroke: "var(--color-primary)" }}
+        />
 
-      {data.map((d, i) => {
-        const ratio = Math.max(0, Math.min(d.score / d.maxScore, 1));
-        const p = pointAt(i, ratio);
-        return (
-          <circle
-            key={i}
-            cx={p.x}
-            cy={p.y}
-            r={3.5}
-            style={{ fill: "var(--color-primary)" }}
-          />
-        );
-      })}
+        {data.map((d, i) => {
+          const ratio = Math.max(0, Math.min(d.score / d.maxScore, 1));
+          const p = pointAt(i, ratio);
+          return (
+            <circle
+              key={i}
+              cx={p.x}
+              cy={p.y}
+              r={3.5}
+              style={{ fill: "var(--color-primary)" }}
+            />
+          );
+        })}
+      </g>
 
       {data.map((d, i) => {
         const angle = angleFor(i);

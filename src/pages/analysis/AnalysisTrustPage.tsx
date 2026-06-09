@@ -153,22 +153,19 @@ const AnalysisTrustPage = () => {
               )}
             </div>
 
-            {/* 신뢰도 레이더 */}
-            <div className="bg-white px-5 py-[30px] flex flex-col items-center gap-4">
-              <h3 className="text-[16px] font-semibold text-[#1A1A1A] self-start">신뢰도 레이더</h3>
-              <RadarChart
-                size={210}
-                data={SECTIONS.map(({ key, label, section }) => ({
-                  label,
-                  score: section.score,
-                  maxScore: MAX_SCORES[key],
-                }))}
-              />
-            </div>
-
             {/* 항목별 점수 */}
             <div className="bg-white px-5 py-[30px] flex flex-col gap-4">
               <h3 className="text-[16px] font-semibold text-[#1A1A1A]">항목별 점수</h3>
+              <div className="flex justify-center">
+                <RadarChart
+                  size={210}
+                  data={SECTIONS.map(({ key, label, section }) => ({
+                    label,
+                    score: section.score,
+                    maxScore: MAX_SCORES[key],
+                  }))}
+                />
+              </div>
               <div className="flex flex-col gap-3">
                 {SECTIONS.map(({ key, label, section }, i) => (
                   <ScoreBar
