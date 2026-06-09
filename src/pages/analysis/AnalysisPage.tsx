@@ -59,6 +59,14 @@ const AnalysisPage = () => {
       };
       rafRef.current = requestAnimationFrame(animate);
 
+      setStepIndex(0);
+      const stepInterval = FAST_DURATION / STEPS.length;
+      const stepTimers = STEPS.slice(1).map((_, i) =>
+        setTimeout(() => {
+          if (!cancelled) setStepIndex(i + 1);
+        }, stepInterval * (i + 1)),
+      );
+
       const timer = setTimeout(() => {
         if (!cancelled) navigate("/analysis/result", {
           state: {
@@ -72,6 +80,7 @@ const AnalysisPage = () => {
       return () => {
         cancelled = true;
         clearTimeout(timer);
+        stepTimers.forEach(clearTimeout);
         if (rafRef.current) cancelAnimationFrame(rafRef.current);
         startRef.current = null;
       };
@@ -178,7 +187,7 @@ const AnalysisPage = () => {
   };
 
   if (loading) {
-    const title = hasContentId ? "신뢰도 확인 중..." : STEPS[stepIndex];
+    const title = STEPS[stepIndex];
 
     return (
       <div className="h-full bg-[#F5F5F5] flex flex-col items-center justify-center px-5 gap-8">

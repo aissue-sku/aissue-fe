@@ -62,7 +62,7 @@ const SignupPage = () => {
                 type="text"
                 placeholder="영문·숫자 4~20자"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setUsername(e.target.value.replace(/\s/g, ""))}
                 className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[var(--color-primary)] transition-colors ${fieldErrors?.username ? "border-red-400" : "border-gray-200"}`}
               />
               {fieldErrors?.username && (
@@ -96,7 +96,7 @@ const SignupPage = () => {
                 type="password"
                 placeholder="영문·숫자·특수문자 포함 8~20자"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value.replace(/\s/g, ""))}
                 className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[var(--color-primary)] transition-colors ${fieldErrors?.password ? "border-red-400" : "border-gray-200"}`}
               />
               {fieldErrors?.password && (
@@ -113,7 +113,7 @@ const SignupPage = () => {
                 type="password"
                 placeholder="비밀번호를 다시 입력하세요"
                 value={passwordConfirm}
-                onChange={(e) => setPasswordConfirm(e.target.value)}
+                onChange={(e) => setPasswordConfirm(e.target.value.replace(/\s/g, ""))}
                 className={`h-13 border rounded-xl px-4 text-[16px] text-gray-900 placeholder-gray-300 outline-none focus:border-[var(--color-primary)] transition-colors ${localError ? "border-red-400" : "border-gray-200"}`}
               />
               {localError && (
