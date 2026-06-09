@@ -4,6 +4,7 @@ import CircularProgress from "../../components/analysis/CircularProgress";
 import ScoreBar from "../../components/analysis/ScoreBar";
 import DetailSection from "../../components/analysis/DetailSection";
 import RelatedArticleCard from "../../components/analysis/RelatedArticleCard";
+import RadarChart from "../../components/analysis/RadarChart";
 import { analysisService } from "../../services/analysis";
 import { ApiError } from "../../services/client";
 import type { ContentAnalysisResponse, StockAnalysisResponse } from "../../types/api";
@@ -150,6 +151,19 @@ const AnalysisTrustPage = () => {
                   </svg>
                 </a>
               )}
+            </div>
+
+            {/* 신뢰도 레이더 */}
+            <div className="bg-white px-5 py-[30px] flex flex-col items-center gap-4">
+              <h3 className="text-[16px] font-semibold text-[#1A1A1A] self-start">신뢰도 레이더</h3>
+              <RadarChart
+                size={210}
+                data={SECTIONS.map(({ key, label, section }) => ({
+                  label,
+                  score: section.score,
+                  maxScore: MAX_SCORES[key],
+                }))}
+              />
             </div>
 
             {/* 항목별 점수 */}

@@ -34,7 +34,7 @@ const SearchPage = () => {
     rank <= 3 ? "bg-[#FFF0EE] text-[#FF6B6B]" : "bg-[#EEF4FF] text-[#7BA7FF]";
 
   return (
-    <div className="min-h-full bg-transparent px-5 pt-6 pb-6 animate-page-enter">
+    <div className="min-h-full bg-white px-5 pt-6 pb-6">
       {/* 검색창 */}
       <div className="flex items-center gap-3 bg-[#F2F3F5] rounded-[8px] px-5 h-[52px] mb-5">
         <Search size={18} className="text-[#8E99A7] flex-shrink-0" />
@@ -55,22 +55,26 @@ const SearchPage = () => {
 
       {/* 인기 검색어 */}
       <div className="flex items-center gap-2 mb-8 flex-wrap">
-        <span className="text-sm text-gray-400 flex-shrink-0">인기 검색어:</span>
-        {popularLoading ? (
-          [40, 56, 48].map((w) => (
-            <div key={w} className="h-7 rounded-full bg-gray-200 animate-pulse" style={{ width: w }} />
-          ))
-        ) : (
-          popularKeywords.map((item) => (
-            <button
-              key={item.keyword}
-              onClick={() => goToResult(item.keyword)}
-              className="px-4 py-1 rounded-full text-sm font-semibold bg-[#F2F3F5] text-[#697584] active:bg-[var(--color-primary)] active:text-white transition-colors cursor-pointer"
-            >
-              {item.keyword}
-            </button>
-          ))
-        )}
+        <span className="text-sm text-gray-400 flex-shrink-0">
+          인기 검색어:
+        </span>
+        {popularLoading
+          ? [40, 56, 48].map((w) => (
+              <div
+                key={w}
+                className="h-7 rounded-full bg-gray-200 animate-pulse"
+                style={{ width: w }}
+              />
+            ))
+          : popularKeywords.map((item) => (
+              <button
+                key={item.keyword}
+                onClick={() => goToResult(item.keyword)}
+                className="px-4 py-1 rounded-full text-sm font-semibold bg-[#F2F3F5] text-[#697584] active:bg-[var(--color-primary)] active:text-white transition-colors cursor-pointer"
+              >
+                {item.keyword}
+              </button>
+            ))}
       </div>
 
       {/* 급상승 키워드 */}
@@ -141,7 +145,9 @@ const SearchPage = () => {
           </div>
         ))}
       </div>
-      {showUpgradeModal && <UpgradeModal onClose={() => setShowUpgradeModal(false)} />}
+      {showUpgradeModal && (
+        <UpgradeModal onClose={() => setShowUpgradeModal(false)} />
+      )}
     </div>
   );
 };

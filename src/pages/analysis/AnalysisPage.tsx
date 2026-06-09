@@ -59,7 +59,6 @@ const AnalysisPage = () => {
       };
       rafRef.current = requestAnimationFrame(animate);
 
-      setStepIndex(0);
       const stepInterval = FAST_DURATION / STEPS.length;
       const stepTimers = STEPS.slice(1).map((_, i) =>
         setTimeout(() => {
@@ -126,7 +125,7 @@ const AnalysisPage = () => {
 
     const runStep = (stepIdx: number) => {
       if (cancelled || stopped) return;
-      setStepIndex(stepIdx);
+      if (stepIdx > 0) setStepIndex(stepIdx);
       const from = stepIdx === 0 ? 0 : STEP_TARGETS[stepIdx - 1];
       const to = STEP_TARGETS[stepIdx];
 
